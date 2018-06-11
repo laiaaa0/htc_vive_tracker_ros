@@ -48,9 +48,11 @@ bool HtcViveTrackerAlgNode::CheckHMDValuesValid (){
 	}
 	else {
 		if (this->alg_.GetDevicePositionQuaternion ("tracking_reference_2", position2, quat2)){
-			if (AreArraysEqual (position, position2)){
-				return false;
-			}
+			if (AreArraysEqual (position, position2))return false;
+			
+		} 
+		if (this->alg_.GetDevicePositionQuaternion("tracking_reference_1", position2,quat2)){
+			if (AreArraysEqual (position,position2)) return false;
 		}
 		
 	}
@@ -69,11 +71,14 @@ void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device){
 void HtcViveTrackerAlgNode::mainNodeThread(void)
 {
 
- //PrintQuaternionPose("tracker_1");
- // BroadcastPose(this->device_name_);
+  // This function detects if a new device has been connected / disconnected
+  this->alg_.PollEvents();
+
+  // For each device name 
   std::vector<std::string> names;
   if (this->alg_.GetDeviceNames(names)){
 	for (int i = 0; i<names.size(); ++i){
+		// HMD always returns a dummy position which is either (0,0,0,1) or the position of a tracking_reference.
 		if (names[i]=="hmd_1" && !this->CheckHMDValuesValid()){
 			continue;
 		}
@@ -144,6 +149,7 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
 
     	tf2::Quaternion q = tf2::Quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
 	
+	//Apply the necessary rotations so that the coordinate system is the one decided at IRI
 	q = this -> ApplyRotationForIRIStandardCoordinates(q);
 
 	transform_stamped_.transform.rotation.x = q.x();

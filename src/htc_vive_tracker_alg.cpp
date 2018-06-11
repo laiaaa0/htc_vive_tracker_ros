@@ -55,3 +55,6 @@ bool HtcViveTrackerAlgorithm::GetChaperoneDimensions(std::vector<std::vector<flo
 	
 	return this->htc_vive_.GetChaperoneDimensions(corners,sizeX,sizeY);
 }
+bool HtcViveTrackerAlgorithm::PollEvents(){
+	return this->htc_vive_.EventPolling();
+}
