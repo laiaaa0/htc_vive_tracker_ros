@@ -128,6 +128,8 @@ class HtcViveTrackerAlgorithm
 
     bool GetChaperoneDimensions(std::vector<std::vector<float> > & corners, float & sizeX, float & sizeY);
     bool PollEvents();
+
+    float GetBatteryLevel(const std::string & device_name);
     // the driver parameters
 
    /**

@@ -58,3 +58,7 @@ bool HtcViveTrackerAlgorithm::GetChaperoneDimensions(std::vector<std::vector<flo
 bool HtcViveTrackerAlgorithm::PollEvents(){
 	return this->htc_vive_.EventPolling();
 }
+
+float HtcViveTrackerAlgorithm::GetBatteryLevel(const std::string & device_name){
+	return this->htc_vive_.GetBatteryLevel(device_name);
+}

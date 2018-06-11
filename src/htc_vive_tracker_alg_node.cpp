@@ -78,6 +78,10 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
   std::vector<std::string> names;
   if (this->alg_.GetDeviceNames(names)){
 	for (int i = 0; i<names.size(); ++i){
+		if (this->alg_.GetBatteryLevel(names[i]) < 0.1){
+			ROS_WARN ("Battery level of %s is less than 10%", names[i]);
+		}
+		
 		// HMD always returns a dummy position which is either (0,0,0,1) or the position of a tracking_reference.
 		if (names[i]=="hmd_1" && !this->CheckHMDValuesValid()){
 			continue;
