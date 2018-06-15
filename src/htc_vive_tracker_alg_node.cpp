@@ -3,11 +3,24 @@
 HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   algorithm_base::IriBaseAlgorithm<HtcViveTrackerAlgorithm>()
 {
-  //init class attributes if necessary
-  this->loop_rate_ = 5;//in [Hz]
-  if (!this->alg_.InitVR(true)){
+   //init class attributes if necessary
+  if (this->public_node_handle_.hasParam("looprate")){
+    this->public_node_handle_.getParam("looprate",this->loop_rate);
+  }
+  else {
+	this->loop_rate_ = 5;
+  }
+  
+  bool verbose = true;
+  if (this->public_node_handle_.hasParam("verbose")){
+    this->public_node_handle_.getParam("verbose",verbose);
+  }
+  
+
+  if (!this->alg_.InitVR(verbose)){
   	ROS_ERROR("Problem with initialization. Check other error messages");
   }
+ }
   // [init publishers]
   
   // [init subscribers]
