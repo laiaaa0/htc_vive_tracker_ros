@@ -48,6 +48,8 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     geometry_msgs::TransformStamped transform_stamped_;
     float ax_, ay_,az_,angle_rad_;
     bool apply_rotation_;
+    double wam_to_chaperone_x_, wam_to_chaperone_y_, wam_to_chaperone_z_;
+    double wam_to_chaperone_i_, wam_to_chaperone_j_, wam_to_chaperone_k_, wam_to_chaperone_w_;
     // [subscriber attributes]
 	
     // [service attributes]
@@ -125,6 +127,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     
     // [test functions]
     void BroadcastPoseRotated(const std::string & device_name);
+    void BroadcastWAMToChaperoneTransformation ();
     void PrintQuaternionPose (const std::string & device_name);
     void PrintAllDeviceNames();
     void ApplyRotation(tf2::Quaternion & q, float x, float y, float z, float angle);

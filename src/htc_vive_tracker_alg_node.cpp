@@ -3,9 +3,25 @@
 HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   algorithm_base::IriBaseAlgorithm<HtcViveTrackerAlgorithm>()
 {
+   this->loop_rate_ = 20;
+   bool verbose = true;
+   //"delay": -7165.209842681885, 
+   //"rotation": {
+     this->wam_to_chaperone_i_ = -0.004155247641619615;
+     this->wam_to_chaperone_j_ = 0.010017762641695618;
+     this->wam_to_chaperone_k_ = -0.9953359445264848;
+     this->wam_to_chaperone_w_ = 0.09585789420940735;
+   //}, 
+   //"translation": {
+     this->wam_to_chaperone_x_ = 0.0006095892506164251; 
+     this->wam_to_chaperone_y_ = -0.006141146275579224;
+     this->wam_to_chaperone_z_ = 0.07223111590777255;
+  // }
+
    //init class attributes if necessary
+/*
   if (this->public_node_handle_.hasParam("looprate")){
-    this->public_node_handle_.getParam("looprate",this->loop_rate);
+    this->public_node_handle_.getParam("looprate",this->loop_rate_);
   }
   else {
 	this->loop_rate_ = 5;
@@ -16,11 +32,10 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
     this->public_node_handle_.getParam("verbose",verbose);
   }
   
-
+*/
   if (!this->alg_.InitVR(verbose)){
   	ROS_ERROR("Problem with initialization. Check other error messages");
   }
- }
   // [init publishers]
   
   // [init subscribers]
@@ -62,6 +77,7 @@ void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device){
 void HtcViveTrackerAlgNode::mainNodeThread(void)
 {
 
+   BroadcastWAMToChaperoneTransformation ();
   // This function detects if a new device has been connected / disconnected
   this->alg_.PollEvents();
 
@@ -83,6 +99,7 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 		}
 	}
   }
+  
   // [fill msg structures]
   
   // [fill srv structure and make request to the server]
@@ -135,14 +152,22 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
     double roll,pitch,yaw;
 	
     if (this->alg_.GetDevicePositionQuaternion(device_name,pose,quaternion)){
-    //if (this->alg_.GetDevicePositionEuler(device_name,pose,roll,pitch,yaw)){
+
 	this->transform_stamped_.header.stamp = ros::Time::now();
 	this->transform_stamped_.header.frame_id = "chaperone";
 	transform_stamped_.child_frame_id = device_name;
 	transform_stamped_.transform.translation.x = pose[0];
 	transform_stamped_.transform.translation.y = pose[1];
 	transform_stamped_.transform.translation.z = pose[2];
+	
+	/*
 
+	x = quaternion[0]
+ 	y = quaternion[1]
+	z = quaternion[2]
+	
+	w = quaternion[3]
+	*/
     	tf2::Quaternion q = tf2::Quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
 	
 	//Apply the necessary rotations so that the coordinate system is the one decided at IRI
@@ -196,6 +221,30 @@ void HtcViveTrackerAlgNode::ApplyRotation(tf2::Quaternion & orig, float ax, floa
 	this->transform_stamped_.transform.rotation.w = finalQ.w();
 	
 	
+}
+void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation (){
+	
+    	static tf2_ros::TransformBroadcaster tf_broadcaster;
+    	geometry_msgs::TransformStamped transform_stamped_wam_chaperone;
+	transform_stamped_wam_chaperone.header.stamp = ros::Time::now();
+	transform_stamped_wam_chaperone.header.frame_id = "chaperone";
+	transform_stamped_wam_chaperone.child_frame_id = "iri_wam_link_base";
+	transform_stamped_wam_chaperone.transform.translation.x = this->wam_to_chaperone_x_;
+	transform_stamped_wam_chaperone.transform.translation.y = this->wam_to_chaperone_y_;
+	transform_stamped_wam_chaperone.transform.translation.z = this->wam_to_chaperone_z_;
+
+	
+	
+	
+
+	transform_stamped_wam_chaperone.transform.rotation.x = this->wam_to_chaperone_i_;
+	transform_stamped_wam_chaperone.transform.rotation.y = this->wam_to_chaperone_j_;
+	transform_stamped_wam_chaperone.transform.rotation.z = this->wam_to_chaperone_k_;
+	transform_stamped_wam_chaperone.transform.rotation.w = this->wam_to_chaperone_w_;
+
+
+	tf_broadcaster.sendTransform(transform_stamped_wam_chaperone);
+ 
 }
 /* main function */
 int main(int argc,char *argv[])
