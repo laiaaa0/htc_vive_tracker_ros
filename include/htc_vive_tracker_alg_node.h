@@ -66,6 +66,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     */
     Config config_;
     std::string device_name_;
+    bool publish_hmd_;
   public:
    /**
     * \brief Constructor
@@ -83,7 +84,6 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     */
     ~HtcViveTrackerAlgNode(void);
 
-    bool CheckHMDValuesValid ();
   protected:
    /**
     * \brief main node thread

@@ -48,29 +48,7 @@ bool AreArraysEqual (const double * array1, const double * array2){
 	return true;
 
 }
-bool HtcViveTrackerAlgNode::CheckHMDValuesValid (){
-    double position[3];
-    double quat [4];
-    double position2[3];
-    double quat2 [4];
-    if (this->alg_.GetDevicePositionQuaternion ("hmd_1", position,quat)){
- 	if (position[0]==0 && position[1] == 0 && position[2] == 0){
-		if (quat[0]==0 && quat[1] == 0 && quat[2] == 0 && quat[3] == 1){
-			return false;
-		}
-	}
-	else {
-		if (this->alg_.GetDevicePositionQuaternion ("tracking_reference_2", position2, quat2)){
-			if (AreArraysEqual (position, position2))return false;
-			
-		} 
-		if (this->alg_.GetDevicePositionQuaternion("tracking_reference_1", position2,quat2)){
-			if (AreArraysEqual (position,position2)) return false;
-		}
-		
-	}
-    }
-} 
+ 
 void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device){
     double pose[3];
     double q[4];
@@ -96,7 +74,7 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 		}
 		
 		// HMD always returns a dummy position which is either (0,0,0,1) or the position of a tracking_reference.
-		if (names[i]=="hmd_1" && !this->CheckHMDValuesValid()){
+		if (names[i]=="hmd_1" && !this->publish_hmd_){
 			continue;
 		}
 		else{
@@ -141,6 +119,7 @@ void HtcViveTrackerAlgNode::node_config_update(Config &config, uint32_t level)
 	this->apply_rotation_=false;
    }*/
   this->config_=config;
+  this->publish_hmd_ = config.publish_hmd;
   this->alg_.unlock();
 }
 
