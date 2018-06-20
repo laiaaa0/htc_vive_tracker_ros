@@ -31,12 +31,11 @@ find_package(htc_vive_tracker REQUIRED)
 # )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-   FILES
-   BaseStationSrv.srv
+#add_service_files(
+#   FILES
 #   Service1.srv
 #   Service2.srv
-)
+#)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -89,7 +88,7 @@ include_directories(${htc_vive_tracker_INCLUDE_DIR})
 # add_library(${PROJECT_NAME} <list of source files>)
 
 ## Declare a cpp executable
-add_executable(${PROJECT_NAME} src/htc_vive_tracker_alg.cpp src/htc_vive_tracker_alg_node.cpp)
+add_executable(${PROJECT_NAME} src/htc_vive_tracker_alg.cpp src/htc_vive_tracker_alg_node.cpp src/file_reader.cpp)
 
 # ******************************************************************** 
 #                   Add the libraries

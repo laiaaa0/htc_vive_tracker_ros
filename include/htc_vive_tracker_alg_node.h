@@ -32,6 +32,7 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <tf2/LinearMath/Quaternion.h>
+#include "file_reader.h"
 // [service client headers]
 
 // [action server client headers]
