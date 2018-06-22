@@ -29,10 +29,9 @@
 #include "htc_vive_tracker_alg.h"
 
 // [publisher subscriber headers]
-#include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
-#include <tf2/LinearMath/Quaternion.h>
-#include "file_reader.h"
+#include <tf/transform_broadcaster.h>
+#include "hand_eye_calibration_helper.h"
 // [service client headers]
 
 // [action server client headers]
@@ -45,16 +44,17 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
 {
   private:
     // [publisher attributes]
-    //tf2_ros::TransformBroadcaster tf_broadcaster_;
     const std::string BASE_NAME = "iri_wam_link_base";
     const std::string WORLD_NAME = "chaperone";
-    FileReader file_reader_;
     geometry_msgs::TransformStamped transform_stamped_;
-    geometry_msgs::TransformStamped transform_wam_chaperone_;
+    tf::StampedTransform transform_wam_chaperone_;
     float ax_, ay_,az_,angle_rad_;
     bool apply_rotation_;
     double wam_to_chaperone_x_, wam_to_chaperone_y_, wam_to_chaperone_z_;
     double wam_to_chaperone_i_, wam_to_chaperone_j_, wam_to_chaperone_k_, wam_to_chaperone_w_;
+ 
+
+    HandEyeHelper hand_eye_helper_;
     // [subscriber attributes]
 	
     // [service attributes]
@@ -135,9 +135,10 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     void BroadcastWAMToChaperoneTransformation ();
     void PrintQuaternionPose (const std::string & device_name);
     void PrintAllDeviceNames();
-    void ApplyRotation(tf2::Quaternion & q, float x, float y, float z, float angle);
-    tf2::Quaternion ApplyRotationForIRIStandardCoordinates(const tf2::Quaternion & orig);
+    void ApplyRotation(tf::Quaternion & q, float x, float y, float z, float angle);
+    tf::Quaternion ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig);
     void SetValuesWamToChaperone (const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv);
+
 };
 
 #endif

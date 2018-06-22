@@ -9,7 +9,7 @@ find_package(catkin REQUIRED)
 #                 Add catkin additional components here
 # ******************************************************************** 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy iri_base_algorithm std_msgs geometry_msgs message_generation 
-tf2 tf2_ros
+tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -65,7 +65,7 @@ catkin_package(
 # ******************************************************************** 
 #            Add ROS and IRI ROS run time dependencies
 # ******************************************************************** 
- CATKIN_DEPENDS iri_base_algorithm #geometry_msgs std_msgs message_generation
+ CATKIN_DEPENDS iri_base_algorithm 
 # ******************************************************************** 
 #      Add system and labrobotica run time dependencies here
 # ******************************************************************** 
@@ -88,7 +88,7 @@ include_directories(${htc_vive_tracker_INCLUDE_DIR})
 # add_library(${PROJECT_NAME} <list of source files>)
 
 ## Declare a cpp executable
-add_executable(${PROJECT_NAME} src/htc_vive_tracker_alg.cpp src/htc_vive_tracker_alg_node.cpp src/file_reader.cpp)
+add_executable(${PROJECT_NAME} src/htc_vive_tracker_alg.cpp src/htc_vive_tracker_alg_node.cpp src/file_reader.cpp src/hand_eye_calibration_helper.cpp)
 
 # ******************************************************************** 
 #                   Add the libraries

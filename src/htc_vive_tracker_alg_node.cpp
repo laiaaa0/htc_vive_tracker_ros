@@ -142,7 +142,7 @@ void HtcViveTrackerAlgNode::addNodeDiagnostics(void)
 
 void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name){
 
-    static tf2_ros::TransformBroadcaster tf_broadcaster;
+    static tf::TransformBroadcaster tf_broadcaster;
     double pose[3];
     double quaternion[4];
     double roll,pitch,yaw;
@@ -164,7 +164,7 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
 	
 	w = quaternion[3]
 	*/
-    	tf2::Quaternion q = tf2::Quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+    	tf::Quaternion q = tf::Quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
 	
 	//Apply the necessary rotations so that the coordinate system is the one decided at IRI
 	q = this -> ApplyRotationForIRIStandardCoordinates(q);
@@ -188,15 +188,15 @@ void HtcViveTrackerAlgNode::PrintAllDeviceNames(){
 		}
 	}
 }
-tf2::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(const tf2::Quaternion & orig){
-	tf2::Quaternion q_result;
+tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig){
+	tf::Quaternion q_result;
 
 	//Define rotations by axis + angle
-	tf2::Vector3 x_axis(1.0, 0.0, 0.0);	
-	tf2::Vector3 z_axis(0.0, 0.0, 1.0);	
-	tf2::Quaternion rotation_x90 = tf2::Quaternion(x_axis, M_PI/2);
-	tf2::Quaternion rotation_x180 = tf2::Quaternion(x_axis, M_PI);
-	tf2::Quaternion rotation_z90 = tf2::Quaternion(z_axis, M_PI/2);
+	tf::Vector3 x_axis(1.0, 0.0, 0.0);	
+	tf::Vector3 z_axis(0.0, 0.0, 1.0);	
+	tf::Quaternion rotation_x90 = tf::Quaternion(x_axis, M_PI/2);
+	tf::Quaternion rotation_x180 = tf::Quaternion(x_axis, M_PI);
+	tf::Quaternion rotation_z90 = tf::Quaternion(z_axis, M_PI/2);
 
 	//Apply two pre-rotations, in order to match axis in device
 	//Apply two post-rotations, in order to match axis to coordinate system.
@@ -205,11 +205,11 @@ tf2::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(co
 	return q_result;
 	
 }
-void HtcViveTrackerAlgNode::ApplyRotation(tf2::Quaternion & orig, float ax, float ay, float az, float angle_radians){
-	tf2::Vector3 axis(ax,ay,az);
-	tf2::Quaternion rotation = tf2::Quaternion(axis, angle_radians);
+void HtcViveTrackerAlgNode::ApplyRotation(tf::Quaternion & orig, float ax, float ay, float az, float angle_radians){
+	tf::Vector3 axis(ax,ay,az);
+	tf::Quaternion rotation = tf::Quaternion(axis, angle_radians);
 	
-	tf2::Quaternion finalQ = rotation*orig;
+	tf::Quaternion finalQ = rotation*orig;
 	
 	this->transform_stamped_.transform.rotation.x = finalQ.x();
 	this->transform_stamped_.transform.rotation.y = finalQ.y();
@@ -220,23 +220,20 @@ void HtcViveTrackerAlgNode::ApplyRotation(tf2::Quaternion & orig, float ax, floa
 }
 void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation (){
 	
-    	static tf2_ros::TransformBroadcaster tf_broadcaster;
+    	static tf::TransformBroadcaster tf_broadcaster;
 
 	tf_broadcaster.sendTransform(this->transform_wam_chaperone_);
  
 }
 void HtcViveTrackerAlgNode::SetValuesWamToChaperone (const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv){
+	tf::Transform base_transform = this->hand_eye_helper_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv);
+	this->transform_wam_chaperone_ = tf::StampedTransform(
+		 base_transform,
+		 ros::Time::now(),
+		 BASE_NAME,
+		WORLD_NAME
+	);
 	
-	this->transform_wam_chaperone_.transform = Tf2ToGeometryMsgTranformConversion (file_reader_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv));
-	this->transform_wam_chaperone_.header.frame_id = BASE_NAME;
-	this->transform_wam_chaperone_.child_frame_id = WORLD_NAME;
-
-}
-geometry_msgs::Transform Tf2ToGeometryMsgTransformConversion(tf2::Transform & transform_original){
-	geometry_msgs::Transform transform_final;
-	transform_final.translation = transform_original.getOrigin();
-	transform_final.rotation = transform_original.getRotation();
-
 }
 /* main function */
 int main(int argc,char *argv[])
