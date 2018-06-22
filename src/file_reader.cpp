@@ -1,27 +1,29 @@
 #include "file_reader.h"
 	
 	
+std::vector<std::string> string_values = {"x","y","z","i","j","k","w"};
 tf2::Transform FileReader::ReadTransformFromJSON (const std::string & json_file_path){
 	std::ifstream json_file(json_file_path);
+	//std::cout<"Reading JSON FILE : "<<std::endl;
 	std::string line;
+	std::string data_value;
+	std::vector<double>json_values(string_values.size(),0.0); // x,y,z, qx,qy,qz,qw
+
 	while (json_file.good()){
-		getline(json_file,line);
+		getline(json_file,line,'"');
+		for (int i = 0; i<string_values.size(); ++i){
+			if (line == string_values[i]){
+				getline(json_file,data_value,',');
+				json_values[i] = std::stod(data_value.erase(0,1));
+			}
+		}
 	}
 
-	tf2::Transform transform;
+	
+	tf2::Transform transform = GetTransformFromVector(json_values);
 	return transform;
 }
-tf2::Transform FileReader::ReadTransformFromXML (const std::string & xml_file_path){
-	std::ifstream xml_file(xml_file_path);
-	std::string line;
-	while (xml_file.good()){
-		getline(xml_file,line);
-	}
 
-	tf2::Transform transform;
-	return transform;
-
-}
 
 tf2::Transform FileReader::ReadFirstTransformFromCSV (const std::string & csv_file_path){
 	std::ifstream csv_file(csv_file_path);
@@ -70,10 +72,19 @@ double ValueFromString (const std::string & value_str){
 	return std::stod (value_str);
 
 }
-tf2::Transform GetBaseWorldFromTransforms ( 	tf2::Transform hand_eye , tf2::Transform base_hand, tf2::Transform world_eye){
+tf2::Transform FileReader::GetBaseWorldFromTransforms ( 	tf2::Transform hand_eye , tf2::Transform base_hand, tf2::Transform world_eye){
 	
 	tf2::Transform  t1 = base_hand*hand_eye;
 	t1 = t1*(world_eye.inverse());
 	return t1;
 
+}
+
+tf2::Transform FileReader::GetBaseFromFilePaths (const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv){
+	
+	tf2::Transform hand_eye_t = ReadTransformFromJSON (hand_eye_json_path);
+	tf2::Transform base_hand_t = ReadFirstTransformFromCSV (base_hand_csv);
+	tf2::Transform world_eye_t = ReadFirstTransformFromCSV (world_eye_csv);
+	
+	return GetBaseWorldFromTransforms (hand_eye_t, base_hand_t, world_eye_t);
 }

@@ -4,18 +4,14 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   algorithm_base::IriBaseAlgorithm<HtcViveTrackerAlgorithm>()
 {
    this->loop_rate_ = 20;
-   bool verbose = true;
-   //"delay": -7165.209842681885, 
-   //"rotation": {
-     this->wam_to_chaperone_i_ = -0.004155247641619615;
-     this->wam_to_chaperone_j_ = 0.010017762641695618;
-     this->wam_to_chaperone_k_ = -0.9953359445264848;
-     this->wam_to_chaperone_w_ = 0.09585789420940735;
-   //}, 
-   //"translation": {
-     this->wam_to_chaperone_x_ = 0.0006095892506164251; 
-     this->wam_to_chaperone_y_ = -0.006141146275579224;
-     this->wam_to_chaperone_z_ = 0.07223111590777255;
+   bool verbose = true; 
+   this-> SetValuesWamToChaperone(
+     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/calibration.json",
+     
+    "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_wam.csv",
+    "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_tracker.csv");
+
+
   // }
 
    //init class attributes if necessary
@@ -225,26 +221,22 @@ void HtcViveTrackerAlgNode::ApplyRotation(tf2::Quaternion & orig, float ax, floa
 void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation (){
 	
     	static tf2_ros::TransformBroadcaster tf_broadcaster;
-    	geometry_msgs::TransformStamped transform_stamped_wam_chaperone;
-	transform_stamped_wam_chaperone.header.stamp = ros::Time::now();
-	transform_stamped_wam_chaperone.header.frame_id = "chaperone";
-	transform_stamped_wam_chaperone.child_frame_id = "iri_wam_link_base";
-	transform_stamped_wam_chaperone.transform.translation.x = this->wam_to_chaperone_x_;
-	transform_stamped_wam_chaperone.transform.translation.y = this->wam_to_chaperone_y_;
-	transform_stamped_wam_chaperone.transform.translation.z = this->wam_to_chaperone_z_;
 
-	
-	
-	
-
-	transform_stamped_wam_chaperone.transform.rotation.x = this->wam_to_chaperone_i_;
-	transform_stamped_wam_chaperone.transform.rotation.y = this->wam_to_chaperone_j_;
-	transform_stamped_wam_chaperone.transform.rotation.z = this->wam_to_chaperone_k_;
-	transform_stamped_wam_chaperone.transform.rotation.w = this->wam_to_chaperone_w_;
-
-
-	tf_broadcaster.sendTransform(transform_stamped_wam_chaperone);
+	tf_broadcaster.sendTransform(this->transform_wam_chaperone_);
  
+}
+void HtcViveTrackerAlgNode::SetValuesWamToChaperone (const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv){
+	
+	this->transform_wam_chaperone_.transform = Tf2ToGeometryMsgTranformConversion (file_reader_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv));
+	this->transform_wam_chaperone_.header.frame_id = BASE_NAME;
+	this->transform_wam_chaperone_.child_frame_id = WORLD_NAME;
+
+}
+geometry_msgs::Transform Tf2ToGeometryMsgTransformConversion(tf2::Transform & transform_original){
+	geometry_msgs::Transform transform_final;
+	transform_final.translation = transform_original.getOrigin();
+	transform_final.rotation = transform_original.getRotation();
+
 }
 /* main function */
 int main(int argc,char *argv[])
