@@ -28,10 +28,8 @@ bool IsNumber (char c){
 	return false;
 }
 void AddValueToField (std::string & num, std::string & field, CalibrationInfo c){
-	std::cout<<"adding "<<num<<" to "<< field<<std::endl;
 	if (field == "x"){
 		c.t.x = std::stod(num);
-		std::cout<<c.t.x<<std::endl;
 	} else if (field == "y"){
 		c.t.y = std::stod(num);
 	} else if (field == "z"){
@@ -65,9 +63,7 @@ CalibrationInfo ReadCalibrationFromJSONFile (const char * file_path){
 			current_field = current_field + c;
 	
 		}
-	//	std::cout<<c<<std::endl;
 	}
-	std::cout<<calibration_info.t.x<<std::endl;
 }
 
 int main (){
