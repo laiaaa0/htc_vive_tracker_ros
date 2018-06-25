@@ -62,3 +62,7 @@ bool HtcViveTrackerAlgorithm::PollEvents(){
 float HtcViveTrackerAlgorithm::GetBatteryLevel(const std::string & device_name){
 	return this->htc_vive_.GetBatteryLevel(device_name);
 }
+
+ButtonFlags HtcViveTrackerAlgorithm::GetPressedButton(){
+	return this->htc_vive_.GetLastButtonPressed();
+}

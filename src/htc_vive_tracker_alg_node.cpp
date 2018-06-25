@@ -7,7 +7,6 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
    bool verbose = true; 
    this-> SetValuesWamToChaperone(
      "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/calibration.json",
-     
     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_wam.csv",
     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_tracker.csv");
 
@@ -49,10 +48,10 @@ HtcViveTrackerAlgNode::~HtcViveTrackerAlgNode(void)
 {
   // [free dynamic memory]
 }
-bool AreArraysEqual (const double * array1, const double * array2){
+bool AreArraysEqual(const double * array1, const double * array2){
 	//if (array1.size() != array2.size()) return false;
 	int i = 0;
-	while (array1[i]!=NULL){
+	while(array1[i]!=NULL){
 		if (array1[i] != array2[i]) return false;
 		i++;
 	}
@@ -218,14 +217,14 @@ void HtcViveTrackerAlgNode::ApplyRotation(tf::Quaternion & orig, float ax, float
 	
 	
 }
-void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation (){
+void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation(){
 	
     	static tf::TransformBroadcaster tf_broadcaster;
 
 	tf_broadcaster.sendTransform(this->transform_wam_chaperone_);
  
 }
-void HtcViveTrackerAlgNode::SetValuesWamToChaperone (const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv){
+void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv){
 	tf::Transform base_transform = this->hand_eye_helper_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv);
 	this->transform_wam_chaperone_ = tf::StampedTransform(
 		 base_transform,

@@ -130,6 +130,7 @@ class HtcViveTrackerAlgorithm
     bool PollEvents();
 
     float GetBatteryLevel(const std::string & device_name);
+    ButtonFlags GetPressedButton();
     // the driver parameters
 
    /**

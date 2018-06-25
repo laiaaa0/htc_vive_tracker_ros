@@ -8,7 +8,7 @@ find_package(catkin REQUIRED)
 # ******************************************************************** 
 #                 Add catkin additional components here
 # ******************************************************************** 
-find_package(catkin REQUIRED COMPONENTS roscpp rospy iri_base_algorithm std_msgs geometry_msgs message_generation 
+find_package(catkin REQUIRED COMPONENTS roscpp rospy iri_base_algorithm std_msgs geometry_msgs 
 tf
 )
 
@@ -45,11 +45,11 @@ find_package(htc_vive_tracker REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-   DEPENDENCIES
-   std_msgs  # Or other packages containing msgs
-   geometry_msgs
-)
+#generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
+#   geometry_msgs
+#)
 
 # ******************************************************************** 
 #                 Add the dynamic reconfigure file 
