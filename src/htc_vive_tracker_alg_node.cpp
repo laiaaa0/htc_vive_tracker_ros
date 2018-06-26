@@ -6,7 +6,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
    this->loop_rate_ = 20;
    bool verbose = true; 
    this-> SetValuesWamToChaperone(
-     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/calibration.json",
+     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/calibrationHandEye.json",
     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_wam.csv",
     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_tracker.csv");
 
@@ -72,7 +72,7 @@ void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device){
 void HtcViveTrackerAlgNode::mainNodeThread(void)
 {
 
-   BroadcastWAMToChaperoneTransformation ();
+  // BroadcastWAMToChaperoneTransformation ();
   // This function detects if a new device has been connected / disconnected
   this->alg_.PollEvents();
 
@@ -226,6 +226,13 @@ void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation(){
 }
 void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv){
 	tf::Transform base_transform = this->hand_eye_helper_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv);
+	std::cout<<"transform x "<<base_transform.getOrigin().x()<<std::endl;
+	std::cout<<"transform y "<<base_transform.getOrigin().y()<<std::endl;
+	std::cout<<"transform z "<<base_transform.getOrigin().z()<<std::endl;
+	std::cout<<"transform i "<<base_transform.getRotation().x()<<std::endl;
+	std::cout<<"transform j "<<base_transform.getRotation().y()<<std::endl;
+	std::cout<<"transform k "<<base_transform.getRotation().z()<<std::endl;
+	std::cout<<"transform w "<<base_transform.getRotation().w()<<std::endl;
 	this->transform_wam_chaperone_ = tf::StampedTransform(
 		 base_transform,
 		 ros::Time::now(),
