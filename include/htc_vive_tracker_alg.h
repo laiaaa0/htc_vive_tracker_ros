@@ -130,7 +130,7 @@ class HtcViveTrackerAlgorithm
     bool PollEvents();
 
     float GetBatteryLevel(const std::string & device_name);
-    ButtonFlags GetPressedButton();
+    ButtonFlags GetPressedButton(const std::string & device_name);
 
     
     bool TriggerHapticPulse (const std::string & device_name, uint32_t strength);

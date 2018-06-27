@@ -260,8 +260,9 @@ bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(std_srvs::Trigger::Requ
 }
 
 bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res){
-	//TODO: @lfreixas implement this callback. Waiting for htc_vive_tracker library to implement getbutton given device
-	return false;
+	ButtonFlags button_pressed =  this->alg_.GetPressedButton(req.device_name);
+	res.button_pressed = (int) button_pressed;
+	return true;
 }
 /* main function */
 int main(int argc,char *argv[])
