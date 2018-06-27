@@ -10,7 +10,6 @@ find_package(catkin REQUIRED)
 # ******************************************************************** 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy iri_base_algorithm std_msgs geometry_msgs 
 tf
-std_srvs
 message_generation
 )
 
@@ -36,6 +35,7 @@ find_package(htc_vive_tracker REQUIRED)
 add_service_files(
    FILES
    GetButtonPressed.srv
+   TriggerHapticPulse.srv
 #   Service2.srv
 )
 

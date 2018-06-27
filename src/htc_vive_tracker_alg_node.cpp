@@ -248,9 +248,8 @@ void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye
 	);
 	
 }
-bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
-	
-	res.success = this->alg_.TriggerHapticPulse(this->device_name_, this->haptic_pulse_strength_);
+bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res){
+	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->haptic_pulse_strength_);
 	if (!res.success){
 		res.message = "Device "+ this->device_name_ + " not found";	
 	}
