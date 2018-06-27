@@ -27,6 +27,7 @@
 
 #include <iri_base_algorithm/iri_base_algorithm.h>
 #include "htc_vive_tracker_alg.h"
+#include "iri_htc_vive_tracker/GetButtonPressed.h"
 
 // [publisher subscriber headers]
 #include <geometry_msgs/TransformStamped.h>
@@ -80,6 +81,8 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     ros::ServiceServer trigger_pulse_server_;
     bool trigger_pulse_serverCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
 
+    ros::ServiceServer get_button_server_;
+    bool get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res);
   public:
    /**
     * \brief Constructor

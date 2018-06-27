@@ -33,11 +33,11 @@ find_package(htc_vive_tracker REQUIRED)
 # )
 
 ## Generate services in the 'srv' folder
-#add_service_files(
-#   FILES
-#   Trigger.srv
+add_service_files(
+   FILES
+   GetButtonPressed.srv
 #   Service2.srv
-#)
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(

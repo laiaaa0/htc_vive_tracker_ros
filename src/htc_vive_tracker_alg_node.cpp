@@ -31,14 +31,17 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   if (!this->alg_.InitVR(verbose)){
   	ROS_ERROR("Problem with initialization. Check other error messages");
   }
-  this->trigger_pulse_server_ = this->public_node_handle_.advertiseService("trigger_pulse", &HtcViveTrackerAlgNode::trigger_pulse_serverCallback, this);
 
   // [init publishers]
+  
   
   // [init subscribers]
   
   // [init services]
   
+  this->trigger_pulse_server_ = this->public_node_handle_.advertiseService("trigger_pulse", &HtcViveTrackerAlgNode::trigger_pulse_serverCallback, this);
+
+  this->get_button_server_ = this->public_node_handle_.advertiseService("button_pressed", &HtcViveTrackerAlgNode::get_button_serverCallback,this);
   // [init clients]
   
   // [init action servers]
@@ -254,6 +257,11 @@ bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(std_srvs::Trigger::Requ
 
 	return res.success;
 
+}
+
+bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res){
+	//TODO: @lfreixas implement this callback. Waiting for htc_vive_tracker library to implement getbutton given device
+	return false;
 }
 /* main function */
 int main(int argc,char *argv[])
