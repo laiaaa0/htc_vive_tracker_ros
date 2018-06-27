@@ -31,6 +31,8 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   if (!this->alg_.InitVR(verbose)){
   	ROS_ERROR("Problem with initialization. Check other error messages");
   }
+  this->trigger_pulse_server_ = this->public_node_handle_.advertiseService("trigger_pulse", &HtcViveTrackerAlgNode::trigger_pulse_serverCallback, this);
+
   // [init publishers]
   
   // [init subscribers]
@@ -119,7 +121,9 @@ void HtcViveTrackerAlgNode::node_config_update(Config &config, uint32_t level)
   ROS_INFO("device name updated to %s",this->device_name_.c_str());
   if (config.print_devices){
 	this->PrintAllDeviceNames();
-  }/*
+  }
+  this->haptic_pulse_strength_ = config.pulse_length;
+  /*
   if (config.apply_rotation){
 	this->apply_rotation_ = true;
 	this->ax_ = config.x_axis;
@@ -240,6 +244,16 @@ void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye
 		WORLD_NAME
 	);
 	
+}
+bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
+	
+	res.success = this->alg_.TriggerHapticPulse(this->device_name_, this->haptic_pulse_strength_);
+	if (!res.success){
+		res.message = "Device "+ this->device_name_ + " not found";	
+	}
+
+	return res.success;
+
 }
 /* main function */
 int main(int argc,char *argv[])

@@ -66,3 +66,6 @@ float HtcViveTrackerAlgorithm::GetBatteryLevel(const std::string & device_name){
 ButtonFlags HtcViveTrackerAlgorithm::GetPressedButton(){
 	return this->htc_vive_.GetLastButtonPressed();
 }
+bool HtcViveTrackerAlgorithm::TriggerHapticPulse(const std::string & device_name, uint32_t strength){
+	return this->htc_vive_.HapticPulse(device_name,0,strength);
+}

@@ -36,6 +36,7 @@
 
 // [action server client headers]
 
+#include <std_srvs/Trigger.h>
 /**
  * \brief IRI ROS Specific Algorithm Class
  *
@@ -73,7 +74,12 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     */
     Config config_;
     std::string device_name_;
+    uint32_t haptic_pulse_strength_;
     bool publish_hmd_;
+ 
+    ros::ServiceServer trigger_pulse_server_;
+    bool trigger_pulse_serverCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
+
   public:
    /**
     * \brief Constructor

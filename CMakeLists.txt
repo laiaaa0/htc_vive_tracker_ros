@@ -10,6 +10,8 @@ find_package(catkin REQUIRED)
 # ******************************************************************** 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy iri_base_algorithm std_msgs geometry_msgs 
 tf
+std_srvs
+message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -33,7 +35,7 @@ find_package(htc_vive_tracker REQUIRED)
 ## Generate services in the 'srv' folder
 #add_service_files(
 #   FILES
-#   Service1.srv
+#   Trigger.srv
 #   Service2.srv
 #)
 
@@ -45,11 +47,11 @@ find_package(htc_vive_tracker REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-#generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
+generate_messages(
+   DEPENDENCIES
+   std_msgs  # Or other packages containing msgs
 #   geometry_msgs
-#)
+)
 
 # ******************************************************************** 
 #                 Add the dynamic reconfigure file 

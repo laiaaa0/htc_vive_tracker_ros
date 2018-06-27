@@ -131,6 +131,9 @@ class HtcViveTrackerAlgorithm
 
     float GetBatteryLevel(const std::string & device_name);
     ButtonFlags GetPressedButton();
+
+    
+    bool TriggerHapticPulse (const std::string & device_name, uint32_t strength);
     // the driver parameters
 
    /**
