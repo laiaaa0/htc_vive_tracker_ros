@@ -11,23 +11,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_tracker.csv");
 
 
-  // }
-
-   //init class attributes if necessary
-/*
-  if (this->public_node_handle_.hasParam("looprate")){
-    this->public_node_handle_.getParam("looprate",this->loop_rate_);
-  }
-  else {
-	this->loop_rate_ = 5;
-  }
-  
-  bool verbose = true;
-  if (this->public_node_handle_.hasParam("verbose")){
-    this->public_node_handle_.getParam("verbose",verbose);
-  }
-  
-*/
+ 
   if (!this->alg_.InitVR(verbose)){
   	ROS_ERROR("Problem with initialization. Check other error messages");
   }
@@ -54,7 +38,6 @@ HtcViveTrackerAlgNode::~HtcViveTrackerAlgNode(void)
   // [free dynamic memory]
 }
 bool AreArraysEqual(const double * array1, const double * array2){
-	//if (array1.size() != array2.size()) return false;
 	int i = 0;
 	while(array1[i]!=NULL){
 		if (array1[i] != array2[i]) return false;
@@ -126,17 +109,7 @@ void HtcViveTrackerAlgNode::node_config_update(Config &config, uint32_t level)
 	this->PrintAllDeviceNames();
   }
   this->haptic_pulse_strength_ = config.pulse_length;
-  /*
-  if (config.apply_rotation){
-	this->apply_rotation_ = true;
-	this->ax_ = config.x_axis;
-	this->ay_ = config.y_axis;
-	this->az_ = config.z_axis;
-	this->angle_rad_ = config.angle_degrees*M_PI/180;
-
-  } else {
-	this->apply_rotation_=false;
-   }*/
+ 
   this->config_=config;
   this->publish_hmd_ = config.publish_hmd;
   this->alg_.unlock();
@@ -162,15 +135,7 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
 	transform_stamped_.transform.translation.y = pose[1];
 	transform_stamped_.transform.translation.z = pose[2];
 	
-	/*
-
-	x = quaternion[0]
- 	y = quaternion[1]
-	z = quaternion[2]
-	
-	w = quaternion[3]
-	*/
-    	tf::Quaternion q = tf::Quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+   	tf::Quaternion q = tf::Quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
 	
 	//Apply the necessary rotations so that the coordinate system is the one decided at IRI
 	q = this -> ApplyRotationForIRIStandardCoordinates(q);
