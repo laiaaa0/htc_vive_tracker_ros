@@ -39,11 +39,14 @@ bool HtcViveTrackerAlgorithm::GetDevicePositionEuler (const std::string & device
   else return false;
 
 }
-bool HtcViveTrackerAlgorithm::GetDeviceVelocity (const std::string & device_name, double (&linear_v)[3], double (&angular_v)[3]){
+Velocity HtcViveTrackerAlgorithm::GetDeviceVelocity(const std::string & device_name) {
   if (this->htc_vive_.IsDeviceDetected(device_name)){
-	return this->htc_vive_.GetDeviceVelocity (device_name, linear_v,angular_v);
+	return this->htc_vive_.GetDeviceVelocity (device_name);
   }
-  else return false;
+  else {
+	Velocity v;
+	return v;
+  }
 }
 bool HtcViveTrackerAlgorithm::GetDeviceNames(std::vector<std::string>&device_names){
 

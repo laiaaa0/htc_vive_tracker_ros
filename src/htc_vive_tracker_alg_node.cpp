@@ -9,10 +9,8 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
      "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/calibrationHandEye.json",
     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_wam.csv",
     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_tracker.csv");
-
-
  
-  if (!this->alg_.InitVR(verbose)){
+  if (!this->alg_.InitVR(verbose)) {
   	ROS_ERROR("Problem with initialization. Check other error messages");
   }
 
@@ -37,9 +35,9 @@ HtcViveTrackerAlgNode::~HtcViveTrackerAlgNode(void)
 {
   // [free dynamic memory]
 }
-bool AreArraysEqual(const double * array1, const double * array2){
+bool AreArraysEqual(const double * array1, const double * array2) {
 	int i = 0;
-	while(array1[i]!=NULL){
+	while(array1[i]!=NULL) {
 		if (array1[i] != array2[i]) return false;
 		i++;
 	}
@@ -47,10 +45,10 @@ bool AreArraysEqual(const double * array1, const double * array2){
 
 }
  
-void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device){
+void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device) {
     double pose[3];
     double q[4];
-    if (this->alg_.GetDevicePositionQuaternion(device,pose,q)){
+    if (this->alg_.GetDevicePositionQuaternion(device,pose,q)) {
 	for (int i = 0; i<3; ++i) std::cout<<pose[i]<<" ";
 	std::cout<<std::endl;
 	for (int i = 0; i<4; ++i) std::cout<<q[i]<<" ";
@@ -66,14 +64,14 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 
   // For each device name 
   std::vector<std::string> names;
-  if (this->alg_.GetDeviceNames(names)){
-	for (int i = 0; i<names.size(); ++i){
-		if (this->alg_.GetBatteryLevel(names[i]) <= 0.1){
+  if (this->alg_.GetDeviceNames(names)) {
+	for (int i = 0; i<names.size(); ++i) {
+		if (this->alg_.GetBatteryLevel(names[i]) <= 0.1) {
 			ROS_WARN_STREAM ("Battery level of "<<names[i]<<" is less than 10%");
 		}
 		
 		// HMD always returns a dummy position which is either (0,0,0,1) or the position of a tracking_reference.
-		if (names[i]=="hmd_1" && !this->publish_hmd_){
+		if (names[i]=="hmd_1" && !this->publish_hmd_) {
 			continue;
 		}
 		else{
@@ -105,7 +103,7 @@ void HtcViveTrackerAlgNode::node_config_update(Config &config, uint32_t level)
   this->alg_.lock();
   this->device_name_ = config.device_name;
   ROS_INFO("device name updated to %s",this->device_name_.c_str());
-  if (config.print_devices){
+  if (config.print_devices) {
 	this->PrintAllDeviceNames();
   }
   this->haptic_pulse_strength_ = config.pulse_length;
@@ -119,14 +117,14 @@ void HtcViveTrackerAlgNode::addNodeDiagnostics(void)
 {
 }
 
-void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name){
+void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name) {
 
     static tf::TransformBroadcaster tf_broadcaster;
     double pose[3];
     double quaternion[4];
     double roll,pitch,yaw;
 	
-    if (this->alg_.GetDevicePositionQuaternion(device_name,pose,quaternion)){
+    if (this->alg_.GetDevicePositionQuaternion(device_name,pose,quaternion)) {
 
 	this->transform_stamped_.header.stamp = ros::Time::now();
 	this->transform_stamped_.header.frame_id = "chaperone";
@@ -150,16 +148,16 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
     }
 
 }
-void HtcViveTrackerAlgNode::PrintAllDeviceNames(){
+void HtcViveTrackerAlgNode::PrintAllDeviceNames() {
 	std::vector<std::string> names;
-	if (this->alg_.GetDeviceNames(names)){
+	if (this->alg_.GetDeviceNames(names)) {
 		std::cout<<"Devices : "<<std::endl;
-		for (int i=0; i<names.size(); ++i){
+		for (int i=0; i<names.size(); ++i) {
 			if (names[i]!="") std::cout<<"  * "<<names[i]<<std::endl;
 		}
 	}
 }
-tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig){
+tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig) {
 	tf::Quaternion q_result;
 
 	//Define rotations by axis + angle
@@ -176,7 +174,7 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 	return q_result;
 	
 }
-void HtcViveTrackerAlgNode::ApplyRotation(tf::Quaternion & orig, float ax, float ay, float az, float angle_radians){
+void HtcViveTrackerAlgNode::ApplyRotation(tf::Quaternion & orig, float ax, float ay, float az, float angle_radians) {
 	tf::Vector3 axis(ax,ay,az);
 	tf::Quaternion rotation = tf::Quaternion(axis, angle_radians);
 	
@@ -189,14 +187,14 @@ void HtcViveTrackerAlgNode::ApplyRotation(tf::Quaternion & orig, float ax, float
 	
 	
 }
-void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation(){
+void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation() {
 	
     	static tf::TransformBroadcaster tf_broadcaster;
 
 	tf_broadcaster.sendTransform(this->transform_wam_chaperone_);
  
 }
-void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv){
+void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv) {
 	tf::Transform base_transform = this->hand_eye_helper_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv);
 	std::cout<<"transform x "<<base_transform.getOrigin().x()<<std::endl;
 	std::cout<<"transform y "<<base_transform.getOrigin().y()<<std::endl;
@@ -213,9 +211,9 @@ void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye
 	);
 	
 }
-bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res){
+bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
 	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->haptic_pulse_strength_);
-	if (!res.success){
+	if (!res.success) {
 		res.message = "Device "+ this->device_name_ + " not found";	
 	}
 
@@ -223,7 +221,7 @@ bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::T
 
 }
 
-bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res){
+bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res) {
 	ButtonFlags button_pressed =  this->alg_.GetPressedButton(req.device_name);
 	res.button_pressed = (int) button_pressed;
 	return true;

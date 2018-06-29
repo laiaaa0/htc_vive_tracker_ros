@@ -119,10 +119,10 @@ class HtcViveTrackerAlgorithm
 
     // here define all htc_vive_tracker_alg interface methods to retrieve and set
  
-    bool InitVR (bool verbose);
-    bool GetDevicePositionQuaternion (const std::string & device_name, double (&pose)[3], double (&quaternion)[4]);
-    bool GetDevicePositionEuler (const std::string & device_name, double (&pose)[3], double &roll, double & pitch, double & yaw);
-    bool GetDeviceVelocity (const std::string & device_name, double (&linear_v)[3], double (&angular_v)[3]);
+    bool InitVR(bool verbose);
+    bool GetDevicePositionQuaternion(const std::string & device_name, double (&pose)[3], double (&quaternion)[4]);
+    bool GetDevicePositionEuler(const std::string & device_name, double (&pose)[3], double &roll, double & pitch, double & yaw);
+    Velocity GetDeviceVelocity(const std::string & device_name);
 
     bool GetDeviceNames(std::vector<std::string>&device_names);
 
@@ -133,7 +133,7 @@ class HtcViveTrackerAlgorithm
     ButtonFlags GetPressedButton(const std::string & device_name);
 
     
-    bool TriggerHapticPulse (const std::string & device_name, uint32_t strength);
+    bool TriggerHapticPulse(const std::string & device_name, uint32_t strength);
     // the driver parameters
 
    /**
