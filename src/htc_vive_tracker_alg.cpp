@@ -54,9 +54,9 @@ bool HtcViveTrackerAlgorithm::GetDeviceNames(std::vector<std::string>&device_nam
 	return true;
 }
 
-bool HtcViveTrackerAlgorithm::GetChaperoneDimensions(std::vector<std::vector<float> > & corners, float & sizeX, float & sizeY){
+Dimension HtcViveTrackerAlgorithm::GetChaperoneDimensions(){
 	
-	return this->htc_vive_.GetChaperoneDimensions(corners,sizeX,sizeY);
+	return this->htc_vive_.GetChaperoneDimensions();
 }
 bool HtcViveTrackerAlgorithm::PollEvents(){
 	return this->htc_vive_.EventPolling();

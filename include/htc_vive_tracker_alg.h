@@ -126,7 +126,7 @@ class HtcViveTrackerAlgorithm
 
     bool GetDeviceNames(std::vector<std::string>&device_names);
 
-    bool GetChaperoneDimensions(std::vector<std::vector<float> > & corners, float & sizeX, float & sizeY);
+    Dimension GetChaperoneDimensions();
     bool PollEvents();
 
     float GetBatteryLevel(const std::string & device_name);
