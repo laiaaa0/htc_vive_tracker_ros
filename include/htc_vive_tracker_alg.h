@@ -129,6 +129,7 @@ class HtcViveTrackerAlgorithm
     Dimension GetChaperoneDimensions();
     bool PollEvents();
 
+    bool IsDeviceDetected (const std::string device_name);
     float GetBatteryLevel(const std::string & device_name);
     ButtonFlags GetPressedButton(const std::string & device_name);
 

@@ -214,7 +214,7 @@ void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye
 bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
 	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->haptic_pulse_strength_);
 	if (!res.success) {
-		res.message = "Device "+ this->device_name_ + " not found";	
+		res.message = "Device  not found";	
 	}
 
 	return res.success;
@@ -224,6 +224,8 @@ bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::T
 bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res) {
 	ButtonFlags button_pressed =  this->alg_.GetPressedButton(req.device_name);
 	res.button_pressed = (int) button_pressed;
+	res.success = this->alg_.IsDeviceDetected (req.device_name);
+	if (!res.success) res.message = "device not detected";
 	return true;
 }
 /* main function */

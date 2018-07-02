@@ -54,6 +54,15 @@ bool HtcViveTrackerAlgorithm::GetDeviceNames(std::vector<std::string>&device_nam
 	return true;
 }
 
+bool HtcViveTrackerAlgorithm::IsDeviceDetected (const std::string device_name){
+
+	std::vector<std::string>device_names = this->htc_vive_.GetAllDeviceNames();
+	for (int i = 0; i < device_names.size(); ++i) {
+		if (device_names[i] == device_name) return true;
+	}
+	return false;
+
+}
 Dimension HtcViveTrackerAlgorithm::GetChaperoneDimensions(){
 	
 	return this->htc_vive_.GetChaperoneDimensions();
