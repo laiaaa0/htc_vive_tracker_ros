@@ -74,7 +74,6 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     * Is updated everytime function config_update() is called.
     */
     Config config_;
-    std::string device_name_;
     uint32_t haptic_pulse_strength_;
     bool publish_hmd_;
  

@@ -75,7 +75,7 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 			continue;
 		}
 		else{
-  			ROS_INFO("Broadcasting pose of %s",names[i].c_str());
+  			//ROS_INFO("Broadcasting pose of %s",names[i].c_str());
 			BroadcastPoseRotated (names[i]);
 		}
 	}
@@ -101,8 +101,7 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 void HtcViveTrackerAlgNode::node_config_update(Config &config, uint32_t level)
 {
   this->alg_.lock();
-  this->device_name_ = config.device_name;
-  ROS_INFO("device name updated to %s",this->device_name_.c_str());
+ 
   if (config.print_devices) {
 	this->PrintAllDeviceNames();
   }
@@ -217,7 +216,7 @@ bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::T
 		res.message = "Device  not found";	
 	}
 
-	return res.success;
+	return true;
 
 }
 
