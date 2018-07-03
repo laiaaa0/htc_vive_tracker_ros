@@ -48,6 +48,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     // [publisher attributes]
     const std::string BASE_NAME = "iri_wam_link_base";
     const std::string WORLD_NAME = "chaperone";
+    const std::string DEVICE_NOT_FOUND_MSG = "Device not found";
     geometry_msgs::TransformStamped transform_stamped_;
     tf::StampedTransform transform_wam_chaperone_;
     float ax_, ay_,az_,angle_rad_;

@@ -35,6 +35,7 @@ HtcViveTrackerAlgNode::~HtcViveTrackerAlgNode(void)
 {
   // [free dynamic memory]
 }
+
 bool AreArraysEqual(const double * array1, const double * array2) {
 	int i = 0;
 	while(array1[i]!=NULL) {
@@ -55,6 +56,8 @@ void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device) {
 	std::cout<<std::endl;
     } 
 }
+
+
 void HtcViveTrackerAlgNode::mainNodeThread(void)
 {
 
@@ -147,6 +150,8 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
     }
 
 }
+
+
 void HtcViveTrackerAlgNode::PrintAllDeviceNames() {
 	std::vector<std::string> names;
 	if (this->alg_.GetDeviceNames(names)) {
@@ -176,23 +181,20 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 void HtcViveTrackerAlgNode::ApplyRotation(tf::Quaternion & orig, float ax, float ay, float az, float angle_radians) {
 	tf::Vector3 axis(ax,ay,az);
 	tf::Quaternion rotation = tf::Quaternion(axis, angle_radians);
-	
 	tf::Quaternion finalQ = rotation*orig;
-	
 	this->transform_stamped_.transform.rotation.x = finalQ.x();
 	this->transform_stamped_.transform.rotation.y = finalQ.y();
 	this->transform_stamped_.transform.rotation.z = finalQ.z();
 	this->transform_stamped_.transform.rotation.w = finalQ.w();
-	
-	
 }
-void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation() {
-	
-    	static tf::TransformBroadcaster tf_broadcaster;
 
+
+void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation() {
+    	static tf::TransformBroadcaster tf_broadcaster;
 	tf_broadcaster.sendTransform(this->transform_wam_chaperone_);
- 
 }
+
+
 void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv) {
 	tf::Transform base_transform = this->hand_eye_helper_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv);
 	std::cout<<"transform x "<<base_transform.getOrigin().x()<<std::endl;
@@ -210,10 +212,12 @@ void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye
 	);
 	
 }
+
+
 bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
 	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->haptic_pulse_strength_);
 	if (!res.success) {
-		res.message = "Device  not found";	
+		res.message = DEVICE_NOT_FOUND_MSG;
 	}
 
 	return true;
@@ -224,7 +228,7 @@ bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetB
 	ButtonFlags button_pressed =  this->alg_.GetPressedButton(req.device_name);
 	res.button_pressed = (int) button_pressed;
 	res.success = this->alg_.IsDeviceDetected (req.device_name);
-	if (!res.success) res.message = "device not detected";
+	if (!res.success) res.message = DEVICE_NOT_FOUND_MSG;
 	return true;
 }
 /* main function */
