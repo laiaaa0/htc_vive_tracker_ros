@@ -225,7 +225,7 @@ bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::T
 }
 
 bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res) {
-	ButtonFlags button_pressed =  this->alg_.GetPressedButton(req.device_name);
+	vr::EVRButtonId button_pressed =  this->alg_.GetPressedButton(req.device_name);
 	res.button_pressed = (int) button_pressed;
 	res.success = this->alg_.IsDeviceDetected (req.device_name);
 	if (!res.success) res.message = DEVICE_NOT_FOUND_MSG;

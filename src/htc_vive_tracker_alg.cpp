@@ -75,8 +75,8 @@ float HtcViveTrackerAlgorithm::GetBatteryLevel(const std::string & device_name){
 	return this->htc_vive_.GetBatteryLevel(device_name);
 }
 
-ButtonFlags HtcViveTrackerAlgorithm::GetPressedButton(const std::string & device_name){
-	return this->htc_vive_.GetLastButtonPressed(device_name);
+vr::EVRButtonId HtcViveTrackerAlgorithm::GetPressedButton(const std::string & device_name){
+	return this->htc_vive_.GetLastButtonPressedEnum(device_name);
 }
 bool HtcViveTrackerAlgorithm::TriggerHapticPulse(const std::string & device_name, uint32_t strength){
 	return this->htc_vive_.HapticPulse(device_name,0,strength);

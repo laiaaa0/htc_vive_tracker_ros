@@ -131,7 +131,7 @@ class HtcViveTrackerAlgorithm
 
     bool IsDeviceDetected (const std::string device_name);
     float GetBatteryLevel(const std::string & device_name);
-    ButtonFlags GetPressedButton(const std::string & device_name);
+    vr::EVRButtonId GetPressedButton(const std::string & device_name);
 
     
     bool TriggerHapticPulse(const std::string & device_name, uint32_t strength);
