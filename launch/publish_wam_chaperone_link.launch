@@ -11,4 +11,9 @@
 		name = "iri_htc_vive_tracker" >
 	</node>
 
+	<node pkg = "iri_tf_to_pose"
+		type = "iri_tf_to_pose"
+		name = "iri_tf_to_pose">
+		<remap from="/iri_tf_to_pose/new_pose" to="/pose_surface" />
+	</node>
 </launch>

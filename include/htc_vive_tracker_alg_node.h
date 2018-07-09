@@ -146,7 +146,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     void PrintAllDeviceNames();
     void ApplyRotation(tf::Quaternion & q, float x, float y, float z, float angle);
     tf::Quaternion ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig);
-    void SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv);
+    bool SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv);
 
 };
 

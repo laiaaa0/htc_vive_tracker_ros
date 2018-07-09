@@ -3,13 +3,41 @@
 HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   algorithm_base::IriBaseAlgorithm<HtcViveTrackerAlgorithm>()
 {
-   this->loop_rate_ = 20;
+   std::string base_path;
+   if (this->public_node_handle_.hasParam("base_path")){
+    this->public_node_handle_.getParam("base_path",base_path);
+   }
+   else {
+    ROS_INFO ("Using default base path!");
+    base_path = "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/" ;
+   }
+
+   int loop_rate;
+   if (this->public_node_handle_.hasParam("loop_rate")){
+	this->public_node_handle_.getParam("loop_rate", loop_rate);
+   } else {
+	ROS_INFO ("Using default loop_rate!");
+	loop_rate = 20;
+   }
+   this->loop_rate_ = loop_rate;
    bool verbose = true; 
-   this-> SetValuesWamToChaperone(
-     "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/calibrationHandEye.json",
-    "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_wam.csv",
-    "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/aligned_tf_poses_tracker.csv");
+
+   if (this->public_node_handle_.hasParam("verbose")){
+	this->public_node_handle_.getParam("verbose", verbose);
+   }
+
+
+   std::string filename1 = "calibrationHandEye.json";
+   std::string filename2 = "aligned_tf_poses_wam.csv";
+   std::string filename3 = "aligned_tf_poses_tracker.csv";
+   bool values_set_ok = this-> SetValuesWamToChaperone(
+	base_path+filename1,
+	base_path+filename2,
+	base_path+filename3);
  
+  if (!values_set_ok) {
+	ROS_ERROR("Problem with setting values!");
+  }
   if (!this->alg_.InitVR(verbose)) {
   	ROS_ERROR("Problem with initialization. Check other error messages");
   }
@@ -129,7 +157,7 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
     if (this->alg_.GetDevicePositionQuaternion(device_name,pose,quaternion)) {
 
 	this->transform_stamped_.header.stamp = ros::Time::now();
-	this->transform_stamped_.header.frame_id = "chaperone";
+	this->transform_stamped_.header.frame_id = WORLD_NAME;
 	transform_stamped_.child_frame_id = device_name;
 	transform_stamped_.transform.translation.x = pose[0];
 	transform_stamped_.transform.translation.y = pose[1];
@@ -195,7 +223,7 @@ void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation() {
 }
 
 
-void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv) {
+bool HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv) {
 	tf::Transform base_transform = this->hand_eye_helper_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv);
 	std::cout<<"transform x "<<base_transform.getOrigin().x()<<std::endl;
 	std::cout<<"transform y "<<base_transform.getOrigin().y()<<std::endl;
@@ -210,7 +238,8 @@ void HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye
 		 BASE_NAME,
 		WORLD_NAME
 	);
-	
+	if (std::isnan(base_transform.getOrigin().x())) return false;
+	return true;
 }
 
 

@@ -26,6 +26,7 @@
 #define _htc_vive_tracker_alg_h_
 
 #include <iri_htc_vive_tracker/HtcViveTrackerConfig.h>
+#include <math.h>
 
 //include htc_vive_tracker_alg main library
 #include "htc_vive_tracker.h"
