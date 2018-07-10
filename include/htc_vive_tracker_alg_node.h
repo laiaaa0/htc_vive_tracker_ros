@@ -49,14 +49,10 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     const std::string BASE_NAME = "iri_wam_link_base";
     const std::string WORLD_NAME = "chaperone";
     const std::string DEVICE_NOT_FOUND_MSG = "Device not found";
+
     geometry_msgs::TransformStamped transform_stamped_;
     tf::StampedTransform transform_wam_chaperone_;
-    float ax_, ay_,az_,angle_rad_;
-    bool apply_rotation_;
-    double wam_to_chaperone_x_, wam_to_chaperone_y_, wam_to_chaperone_z_;
-    double wam_to_chaperone_i_, wam_to_chaperone_j_, wam_to_chaperone_k_, wam_to_chaperone_w_;
  
-
     HandEyeHelper hand_eye_helper_;
     // [subscriber attributes]
 	
@@ -75,6 +71,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     * Is updated everytime function config_update() is called.
     */
     Config config_;
+
     uint32_t haptic_pulse_strength_;
     bool publish_hmd_;
  
@@ -142,12 +139,9 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     // [test functions]
     void BroadcastPoseRotated(const std::string & device_name);
     void BroadcastWAMToChaperoneTransformation();
-    void PrintQuaternionPose(const std::string & device_name);
     void PrintAllDeviceNames();
-    void ApplyRotation(tf::Quaternion & q, float x, float y, float z, float angle);
     tf::Quaternion ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig);
     bool SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv);
-
 };
 
 #endif

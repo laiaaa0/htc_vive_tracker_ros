@@ -6,8 +6,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
    std::string base_path;
    if (this->public_node_handle_.hasParam("base_path")){
     this->public_node_handle_.getParam("base_path",base_path);
-   }
-   else {
+   } else {
     ROS_INFO ("Using default base path!");
     base_path = "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/" ;
    }
@@ -19,6 +18,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
 	ROS_INFO ("Using default loop_rate!");
 	loop_rate = 20;
    }
+
    this->loop_rate_ = loop_rate;
    bool verbose = true; 
 
@@ -30,7 +30,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
    std::string filename1 = "calibrationHandEye.json";
    std::string filename2 = "aligned_tf_poses_wam.csv";
    std::string filename3 = "aligned_tf_poses_tracker.csv";
-   bool values_set_ok = this-> SetValuesWamToChaperone(
+   bool values_set_ok = this->SetValuesWamToChaperone(
 	base_path+filename1,
 	base_path+filename2,
 	base_path+filename3);
@@ -64,32 +64,10 @@ HtcViveTrackerAlgNode::~HtcViveTrackerAlgNode(void)
   // [free dynamic memory]
 }
 
-bool AreArraysEqual(const double * array1, const double * array2) {
-	int i = 0;
-	while(array1[i]!=NULL) {
-		if (array1[i] != array2[i]) return false;
-		i++;
-	}
-	return true;
-
-}
- 
-void HtcViveTrackerAlgNode::PrintQuaternionPose(const std::string & device) {
-    double pose[3];
-    double q[4];
-    if (this->alg_.GetDevicePositionQuaternion(device,pose,q)) {
-	for (int i = 0; i<3; ++i) std::cout<<pose[i]<<" ";
-	std::cout<<std::endl;
-	for (int i = 0; i<4; ++i) std::cout<<q[i]<<" ";
-	std::cout<<std::endl;
-    } 
-}
-
 
 void HtcViveTrackerAlgNode::mainNodeThread(void)
 {
 
-  // BroadcastWAMToChaperoneTransformation ();
   // This function detects if a new device has been connected / disconnected
   this->alg_.PollEvents();
 
@@ -106,7 +84,6 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 			continue;
 		}
 		else{
-  			//ROS_INFO("Broadcasting pose of %s",names[i].c_str());
 			BroadcastPoseRotated (names[i]);
 		}
 	}
@@ -206,16 +183,6 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 	return q_result;
 	
 }
-void HtcViveTrackerAlgNode::ApplyRotation(tf::Quaternion & orig, float ax, float ay, float az, float angle_radians) {
-	tf::Vector3 axis(ax,ay,az);
-	tf::Quaternion rotation = tf::Quaternion(axis, angle_radians);
-	tf::Quaternion finalQ = rotation*orig;
-	this->transform_stamped_.transform.rotation.x = finalQ.x();
-	this->transform_stamped_.transform.rotation.y = finalQ.y();
-	this->transform_stamped_.transform.rotation.z = finalQ.z();
-	this->transform_stamped_.transform.rotation.w = finalQ.w();
-}
-
 
 void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation() {
     	static tf::TransformBroadcaster tf_broadcaster;
