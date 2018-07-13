@@ -52,7 +52,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
 
     geometry_msgs::TransformStamped transform_stamped_;
     //Transformation from base to world. In this case, WAM to CHAPERONE
-    tf::StampedTransform transform_base_world__;
+    tf::StampedTransform transform_base_world_;
  
     HandEyeHelper hand_eye_helper_;
     // [subscriber attributes]
