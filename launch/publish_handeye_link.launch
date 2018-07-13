@@ -1,0 +1,8 @@
+
+<launch>
+	<node pkg="tf" 
+		type="static_transform_publisher" 
+		name="link1_broadcaster" 
+		args="0.006185008136148641 -0.0032844866064458598 0.06609371720891637 0.01484808722103758 0.01054777027546667 0.15708869884249635 0.9874165380142588 iri_wam_link_base chaperone 100"
+	 />
+</launch>

@@ -186,7 +186,7 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 
 void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation() {
     	static tf::TransformBroadcaster tf_broadcaster;
-	tf_broadcaster.sendTransform(this->transform_wam_chaperone_);
+	tf_broadcaster.sendTransform(this->transform_base_world_);
 }
 
 
@@ -199,7 +199,7 @@ bool HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye
 	std::cout<<"transform j "<<base_transform.getRotation().y()<<std::endl;
 	std::cout<<"transform k "<<base_transform.getRotation().z()<<std::endl;
 	std::cout<<"transform w "<<base_transform.getRotation().w()<<std::endl;
-	this->transform_wam_chaperone_ = tf::StampedTransform(
+	this->transform_base_world_ = tf::StampedTransform(
 		 base_transform,
 		 ros::Time::now(),
 		 BASE_NAME,

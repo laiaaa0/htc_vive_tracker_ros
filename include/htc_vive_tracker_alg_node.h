@@ -51,7 +51,8 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     const std::string DEVICE_NOT_FOUND_MSG = "Device not found";
 
     geometry_msgs::TransformStamped transform_stamped_;
-    tf::StampedTransform transform_wam_chaperone_;
+    //Transformation from base to world. In this case, WAM to CHAPERONE
+    tf::StampedTransform transform_base_world__;
  
     HandEyeHelper hand_eye_helper_;
     // [subscriber attributes]
