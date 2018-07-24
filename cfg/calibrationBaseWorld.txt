@@ -1,6 +1,0 @@
-
-- Translation: [1.071, 0.054, 1.070]
-- Rotation: in Quaternion [0.002, -0.012, 1.000, 0.020]
-            in RPY (radian) [-0.023, -0.005, 3.102]
-            in RPY (degree) [-1.331, -0.298, 177.730]
-
