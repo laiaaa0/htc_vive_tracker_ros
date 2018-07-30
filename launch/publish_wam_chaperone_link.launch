@@ -3,7 +3,16 @@
         <node pkg="tf"
               type="static_transform_publisher"
               name="htcvive"
-              args="1.06267 0.120974 -1.07272 0.00237402 -0.0116673 0.999732 -0.0198339 iri_wam_link_base chaperone 300" >
+              args="1.070148243624660
+		0.100652703467688
+		-1.062001187589772
+
+		0.002700182569860
+		0.013148482534647
+		-0.999902817161034
+		0.003765986531232
+	 	iri_wam_link_base 
+		chaperone 300" >
         </node>
 	
 	<node pkg="iri_htc_vive_tracker"
