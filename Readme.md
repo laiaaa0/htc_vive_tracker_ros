@@ -6,17 +6,13 @@ Publishes all the devices positions and orientations as a tf tree. The parent of
 
 # Hand eye calibration
 
-Use the functions from [ethz-asl/hand_eye_calibration](https://github.com/ethz-asl/hand_eye_calibration)
+Use the functions from [HandEyeMatlab](https://gitlab.iri.upc.edu/lfreixas/HandEyeCalibrationMatlab)
 
-This will generate a file calibration.json, which is similar to the one found [here](cfg/calibrationHandEye.json). This file contains HAND-EYE transformation.
-The scripts also generate two aligned_...csv files, which are the tf poses aligning the time.
 
-Take these three files and call the function in the class HandEyeHelper, as follows
+This returns the two transforms (base-world and hand-eye) , you can then print it and add it to your launch file
 
-    HandEyeHelper hand_eye_helper;   
-    hand_eye_helper.GetBaseFromFilePaths("cfg/calibrationHandEye.json","cfg/aligned_tf_poses_wam.csv","cfg/aligned_tf_poses_tracker.csv");
-    
-This returns a transform, you can then print it and add it to your launch file
+Check the launch file [example](launch/publish_wam_chaperone_link.launch)
+
 
 # Tracker axis
 
