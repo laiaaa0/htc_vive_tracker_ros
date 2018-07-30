@@ -33,7 +33,6 @@
 // [publisher subscriber headers]
 #include <geometry_msgs/TransformStamped.h>
 #include <tf/transform_broadcaster.h>
-#include "hand_eye_calibration_helper.h"
 // [service client headers]
 
 // [action server client headers]
@@ -52,9 +51,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
 
     geometry_msgs::TransformStamped transform_stamped_;
     //Transformation from base to world. In this case, WAM to CHAPERONE
-    tf::StampedTransform transform_base_world_;
  
-    HandEyeHelper hand_eye_helper_;
     // [subscriber attributes]
 	
     // [service attributes]
@@ -139,10 +136,8 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     
     // [test functions]
     void BroadcastPoseRotated(const std::string & device_name);
-    void BroadcastWAMToChaperoneTransformation();
     void PrintAllDeviceNames();
     tf::Quaternion ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig);
-    bool SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv);
 };
 
 #endif

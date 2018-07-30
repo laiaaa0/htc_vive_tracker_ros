@@ -90,7 +90,7 @@ include_directories(${htc_vive_tracker_INCLUDE_DIR})
 # add_library(${PROJECT_NAME} <list of source files>)
 
 ## Declare a cpp executable
-add_executable(${PROJECT_NAME} src/htc_vive_tracker_alg.cpp src/htc_vive_tracker_alg_node.cpp src/file_reader.cpp src/hand_eye_calibration_helper.cpp)
+add_executable(${PROJECT_NAME} src/htc_vive_tracker_alg.cpp src/htc_vive_tracker_alg_node.cpp)
 
 # ******************************************************************** 
 #                   Add the libraries

@@ -3,14 +3,6 @@
 HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   algorithm_base::IriBaseAlgorithm<HtcViveTrackerAlgorithm>()
 {
-   std::string base_path;
-   if (this->public_node_handle_.hasParam("base_path")){
-    this->public_node_handle_.getParam("base_path",base_path);
-   } else {
-    ROS_INFO ("Using default base path!");
-    base_path = "/home/pmlab/iri-lab/iri_ws/src/iri_htc_vive_tracker/cfg/" ;
-   }
-
    int loop_rate;
    if (this->public_node_handle_.hasParam("loop_rate")){
 	this->public_node_handle_.getParam("loop_rate", loop_rate);
@@ -26,21 +18,9 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
 	this->public_node_handle_.getParam("verbose", verbose);
    }
 
-
-   std::string filename1 = "calibrationHandEye.json";
-   std::string filename2 = "aligned_tf_poses_wam.csv";
-   std::string filename3 = "aligned_tf_poses_tracker.csv";
-   bool values_set_ok = this->SetValuesWamToChaperone(
-	base_path+filename1,
-	base_path+filename2,
-	base_path+filename3);
- 
-  if (!values_set_ok) {
-	ROS_ERROR("Problem with setting values!");
-  }
-  if (!this->alg_.InitVR(verbose)) {
-  	ROS_ERROR("Problem with initialization. Check other error messages");
-  }
+   if (!this->alg_.InitVR(verbose)) {
+   	ROS_ERROR("Problem with initialization. Check other error messages");
+   }
 
   // [init publishers]
   
@@ -184,30 +164,8 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 	
 }
 
-void HtcViveTrackerAlgNode::BroadcastWAMToChaperoneTransformation() {
-    	static tf::TransformBroadcaster tf_broadcaster;
-	tf_broadcaster.sendTransform(this->transform_base_world_);
-}
 
 
-bool HtcViveTrackerAlgNode::SetValuesWamToChaperone(const std::string & hand_eye_json_path, const std::string &  base_hand_csv, const std::string & world_eye_csv) {
-	tf::Transform base_transform = this->hand_eye_helper_.GetBaseFromFilePaths(hand_eye_json_path, base_hand_csv, world_eye_csv);
-	std::cout<<"transform x "<<base_transform.getOrigin().x()<<std::endl;
-	std::cout<<"transform y "<<base_transform.getOrigin().y()<<std::endl;
-	std::cout<<"transform z "<<base_transform.getOrigin().z()<<std::endl;
-	std::cout<<"transform i "<<base_transform.getRotation().x()<<std::endl;
-	std::cout<<"transform j "<<base_transform.getRotation().y()<<std::endl;
-	std::cout<<"transform k "<<base_transform.getRotation().z()<<std::endl;
-	std::cout<<"transform w "<<base_transform.getRotation().w()<<std::endl;
-	this->transform_base_world_ = tf::StampedTransform(
-		 base_transform,
-		 ros::Time::now(),
-		 BASE_NAME,
-		WORLD_NAME
-	);
-	if (std::isnan(base_transform.getOrigin().x())) return false;
-	return true;
-}
 
 
 bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
