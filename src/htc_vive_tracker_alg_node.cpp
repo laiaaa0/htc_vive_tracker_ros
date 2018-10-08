@@ -22,6 +22,20 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
    	ROS_ERROR("Problem with initialization. Check other error messages");
    }
 
+    this->frame_names_set = true;
+    if (this->public_node_handle_.hasParam("target_frame_name")){
+        this->public_node_handle_.getParam("target_frame_name",this->target_frame_name_);
+    }
+    else {
+        ROS_INFO("No param set for target_frame");
+        this->frame_names_set = false;
+    }
+    
+    this->source_frame_name_ = "chaperone";
+
+    pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
+
+
   // [init publishers]
   
   
@@ -68,6 +82,25 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 		}
 	}
   }
+
+  if (this->frame_names_set){
+    tf::StampedTransform stamped_transform;
+    try{
+        bool is_transform_possible = this->tf_listener_.canTransform(this->source_frame_name_, this->target_frame_name_, ros::Time(0));
+        if (is_transform_possible) {
+            this->tf_listener_.lookupTransform(this->source_frame_name_, this->target_frame_name_, ros::Time(0), stamped_transform);
+            geometry_msgs::PoseStamped tf_pose = this->alg_.PoseFromTF(stamped_transform);
+            this->pose_publisher_.publish(tf_pose);
+        }
+        else {
+            ROS_INFO ("Transform not possible");
+        }
+    }
+    catch (tf::TransformException &ex) {
+          ROS_ERROR("%s",ex.what());
+          ros::Duration(1.0).sleep();
+    }
+   }
   
   // [fill msg structures]
   
@@ -114,7 +147,7 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
     if (this->alg_.GetDevicePositionQuaternion(device_name,pose,quaternion)) {
 
 	this->transform_stamped_.header.stamp = ros::Time::now();
-	this->transform_stamped_.header.frame_id = WORLD_NAME;
+	this->transform_stamped_.header.frame_id = this->alg_.WORLD_NAME;
 	transform_stamped_.child_frame_id = device_name;
 	transform_stamped_.transform.translation.x = pose[0];
 	transform_stamped_.transform.translation.y = pose[1];
@@ -171,7 +204,7 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
 	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->haptic_pulse_strength_);
 	if (!res.success) {
-		res.message = DEVICE_NOT_FOUND_MSG;
+		res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
 	}
 
 	return true;
@@ -182,7 +215,7 @@ bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetB
 	vr::EVRButtonId button_pressed =  this->alg_.GetPressedButton(req.device_name);
 	res.button_pressed = (int) button_pressed;
 	res.success = this->alg_.IsDeviceDetected (req.device_name);
-	if (!res.success) res.message = DEVICE_NOT_FOUND_MSG;
+	if (!res.success) res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
 	return true;
 }
 /* main function */

@@ -30,9 +30,11 @@
 #include "iri_htc_vive_tracker/GetButtonPressed.h"
 #include "iri_htc_vive_tracker/TriggerHapticPulse.h"
 
+#include "tf/transform_listener.h"
+
+
 // [publisher subscriber headers]
 #include <geometry_msgs/TransformStamped.h>
-#include <tf/transform_broadcaster.h>
 // [service client headers]
 
 // [action server client headers]
@@ -45,15 +47,14 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
 {
   private:
     // [publisher attributes]
-    const std::string BASE_NAME = "iri_wam_link_base";
-    const std::string WORLD_NAME = "chaperone";
-    const std::string DEVICE_NOT_FOUND_MSG = "Device not found";
-
     geometry_msgs::TransformStamped transform_stamped_;
     //Transformation from base to world. In this case, WAM to CHAPERONE
  
     // [subscriber attributes]
 	
+    ros::Publisher pose_publisher_;
+    tf::TransformListener tf_listener_;
+        //
     // [service attributes]
 
     // [client attributes]
@@ -72,7 +73,11 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
 
     uint32_t haptic_pulse_strength_;
     bool publish_hmd_;
- 
+    bool frame_names_set;
+
+    std::string target_frame_name_;
+    std::string source_frame_name_;
+
     ros::ServiceServer trigger_pulse_server_;
     bool trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res);
 
