@@ -32,8 +32,10 @@ Check the launch file [example](launch/publish_wam_chaperone_link.launch)
 # WAM follows tracker
 
 ## Dependencies
-* iri_wam_dmp_tracker
-* iri_tf_to_pose
+* htc_vive_tracker [link](https://gitlab.iri.upc.edu/labrobotica/drivers/htc_vive_tracker)
+* iri_wam_dmp tracker [link](https://gitlab.iri.upc.edu/iri_wam/iri_wam_dmp_tracker)
+
+
 
 ## Procedure
 
