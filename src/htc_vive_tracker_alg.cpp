@@ -81,3 +81,17 @@ vr::EVRButtonId HtcViveTrackerAlgorithm::GetPressedButton(const std::string & de
 bool HtcViveTrackerAlgorithm::TriggerHapticPulse(const std::string & device_name, uint32_t strength){
 	return this->htc_vive_.HapticPulse(device_name,0,strength);
 }
+geometry_msgs::PoseStamped HtcViveTrackerAlgorithm::PoseFromTF(const tf::StampedTransform & stamped_transform){
+
+    geometry_msgs::PoseStamped pose_new;
+    pose_new.header.frame_id = this->WORLD_NAME;
+    pose_new.pose.position.x = stamped_transform.getOrigin().x();
+    pose_new.pose.position.y = stamped_transform.getOrigin().y();
+    pose_new.pose.position.z = stamped_transform.getOrigin().z();
+    pose_new.pose.orientation.x = 0; 
+    pose_new.pose.orientation.y = 1; 
+    pose_new.pose.orientation.z = 0; 
+    pose_new.pose.orientation.w = 0; 
+return pose_new;
+
+}

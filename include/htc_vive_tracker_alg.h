@@ -28,8 +28,11 @@
 #include <iri_htc_vive_tracker/HtcViveTrackerConfig.h>
 #include <math.h>
 
+#include "geometry_msgs/PoseStamped.h"
+#include <tf/transform_broadcaster.h>
 //include htc_vive_tracker_alg main library
 #include "htc_vive_tracker.h"
+
 /**
  * \brief IRI ROS Specific Driver Class
  *
@@ -46,6 +49,7 @@ class HtcViveTrackerAlgorithm
     */
     pthread_mutex_t access_;    
 
+
     // private attributes and methods
 
     CHtc_Vive_Tracker htc_vive_;
@@ -57,6 +61,10 @@ class HtcViveTrackerAlgorithm
     * will then use the same variable type Config.
     */
     typedef iri_htc_vive_tracker::HtcViveTrackerConfig Config;
+    const std::string BASE_NAME = "iri_wam_link_base";
+    const std::string WORLD_NAME = "chaperone";
+    const std::string DEVICE_NOT_FOUND_MSG = "Device not found";
+
 
    /**
     * \brief config variable
@@ -136,6 +144,8 @@ class HtcViveTrackerAlgorithm
 
     
     bool TriggerHapticPulse(const std::string & device_name, uint32_t strength);
+
+    geometry_msgs::PoseStamped PoseFromTF(const tf::StampedTransform & stamped_transform);
     // the driver parameters
 
    /**
