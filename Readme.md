@@ -27,3 +27,18 @@ Check the launch file [example](launch/publish_wam_chaperone_link.launch)
 ![htcvivetrackerROS-Page-2](/uploads/b54f6fac94401873783ee96495b84694/htcvivetrackerROS-Page-2.jpg)
 
 ![htcvivetrackerROS](/uploads/011da2e5568b6ee11056e188056c98d3/htcvivetrackerROS.jpg)-->
+
+
+# WAM follows tracker
+
+## Dependencies
+* iri_wam_dmp_tracker
+* iri_tf_to_pose
+
+## Procedure
+
+To test the WAM following tracker demo do the following :
+
+    roslaunch iri_htc_vive_tracker wam_follow_tracker.launch
+    roslaunch iri_wam_bringup iri_wam_bringup.launch
+    roslaunch iri_wam_dmp_tracker iri_wam_dmp_tracker.launch
