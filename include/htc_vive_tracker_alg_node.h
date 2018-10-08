@@ -141,7 +141,13 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     
     // [test functions]
     void BroadcastPoseRotated(const std::string & device_name);
+    
+    void BroadcastAllPoses(void);
+
+    void PublishPoseOfDeviceToFollow(void);
+    
     void PrintAllDeviceNames();
+    
     tf::Quaternion ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig);
 };
 

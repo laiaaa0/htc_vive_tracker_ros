@@ -59,13 +59,8 @@ HtcViveTrackerAlgNode::~HtcViveTrackerAlgNode(void)
 }
 
 
-void HtcViveTrackerAlgNode::mainNodeThread(void)
-{
-
-  // This function detects if a new device has been connected / disconnected
-  this->alg_.PollEvents();
-
-  // For each device name 
+void HtcViveTrackerAlgNode::BroadcastAllPoses(void) {
+ // For each device name 
   std::vector<std::string> names;
   if (this->alg_.GetDeviceNames(names)) {
 	for (int i = 0; i<names.size(); ++i) {
@@ -83,7 +78,11 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
 	}
   }
 
-  if (this->frame_names_set){
+
+}
+
+void HtcViveTrackerAlgNode::PublishPoseOfDeviceToFollow(void){
+   if (this->frame_names_set){
     tf::StampedTransform stamped_transform;
     try{
         bool is_transform_possible = this->tf_listener_.canTransform(this->source_frame_name_, this->target_frame_name_, ros::Time(0));
@@ -102,13 +101,22 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
     }
    }
   
-  // [fill msg structures]
+}
+
+void HtcViveTrackerAlgNode::mainNodeThread(void)
+{
+
+  // This function detects if a new device has been connected / disconnected
+  this->alg_.PollEvents();
+
+  // This function broadcasts the poses of all devices detected
+  this->BroadcastAllPoses();
+
+  // This function publishes the pose of the device in source_frame_name_
+  this->PublishPoseOfDeviceToFollow();
   
-  // [fill srv structure and make request to the server]
 
-  // [fill action structure and make request to the action server]
 
-  // [publish messages]
 }
 
 /*  [subscriber callbacks] */
