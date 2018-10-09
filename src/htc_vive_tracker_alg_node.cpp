@@ -27,7 +27,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
         this->public_node_handle_.getParam("target_frame_name",this->target_frame_name_);
     }
     else {
-        ROS_INFO("No param set for target_frame");
+        ROS_ERROR("No param set for target_frame");
         this->frame_names_set = false;
     }
     
@@ -115,7 +115,6 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
   // This function publishes the pose of the device in source_frame_name_
   this->PublishPoseOfDeviceToFollow();
   
-
 
 }
 

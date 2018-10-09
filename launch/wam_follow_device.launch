@@ -1,9 +1,8 @@
 <launch>
        <!-- Initialize htc vive and publish transformation -->
+    <arg name="device" default="tracker_1"/>
 	<include file="$(find iri_htc_vive_tracker)/launch/publish_wam_chaperone_link.launch">
 	    <!-- Initialize tf-to-pose node from chaperone to tracker1-->
-    	<arg name="target_frame" value ="tracker_1"/>
-
+    	<arg name="target_frame" value ="$(arg device)"/>
 	</include>
-        <remap from="iri_htc_vive_tracker/new_pose" to="iri_wam/pose_surface" />
 </launch>
