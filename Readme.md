@@ -39,8 +39,8 @@ Check the launch file [example](launch/publish_wam_chaperone_link.launch)
 
 ## Procedure
 
-To test the WAM following tracker demo do the following :
+To test the WAM following a tracker demo do the following :
 
-    roslaunch iri_htc_vive_tracker wam_follow_tracker.launch
+    roslaunch iri_htc_vive_tracker wam_follow_device.launch 
     roslaunch iri_wam_bringup iri_wam_bringup.launch
     roslaunch iri_wam_dmp_tracker iri_wam_dmp_tracker.launch
