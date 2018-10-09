@@ -35,6 +35,7 @@
 
 // [publisher subscriber headers]
 #include <geometry_msgs/TransformStamped.h>
+#include <nav_msgs/Odometry.h>
 // [service client headers]
 
 // [action server client headers]
@@ -53,6 +54,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     // [subscriber attributes]
 	
     ros::Publisher pose_publisher_;
+    ros::Publisher vo_publisher_;
     tf::TransformListener tf_listener_;
         //
     // [service attributes]
@@ -149,6 +151,9 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     void PrintAllDeviceNames();
     
     tf::Quaternion ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig);
+    
+    nav_msgs::Odometry CreateOdometryFromPoseVel(const geometry_msgs::PoseStamped & pose, const Velocity & vel);
+    
 };
 
 #endif

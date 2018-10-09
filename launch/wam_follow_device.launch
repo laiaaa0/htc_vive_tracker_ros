@@ -5,4 +5,10 @@
 	    <!-- Initialize tf-to-pose node from chaperone to tracker1-->
     	<arg name="target_frame" value ="$(arg device)"/>
 	</include>
+    
+	<include file="$(find robot_pose_ekf)/robot_pose_ekf.launch"/>
+    <param name="robot_pose_ekf/odom_used" value="false"/>
+    <param name="robot_pose_ekf/imu_used" value="false"/>
+    <param name="robot_pose_ekf/vo_used" value="false"/>
+
 </launch>
