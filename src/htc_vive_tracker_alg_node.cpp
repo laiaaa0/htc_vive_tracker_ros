@@ -229,6 +229,7 @@ bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetB
 	if (!res.success) res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
 	return true;
 }
+
 nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geometry_msgs::PoseStamped & pose, const Velocity & vel){
     
     geometry_msgs::TwistWithCovariance twist_msg;
@@ -238,10 +239,22 @@ nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geomet
     twist_msg.twist.angular.x = vel.angular_velocity.x;
     twist_msg.twist.angular.y = vel.angular_velocity.y;
     twist_msg.twist.angular.z = vel.angular_velocity.z;
-    //TODO Fill covariance
+
+    twist_msg.covariance = {0.01, 0, 0, 0, 0, 0,  // covariance on pose x
+                                0, 0.01, 0, 0, 0, 0,  // covariance on pose y
+                                0, 0, 0.01, 0, 0, 0,  // covariance on pose z
+                                0, 0, 0, 1, 0, 0,  //  covariance on rot x
+                                0, 0, 0, 0, 1, 0,  //  covariance on rot y
+                                0, 0, 0, 0, 0, 1};  //  covariance on rot z
+
     geometry_msgs::PoseWithCovariance pose_msg;
     pose_msg.pose = pose.pose;
-    //TODO Fill covariance
+    pose_msg.covariance = {0.01, 0, 0, 0, 0, 0,  // covariance on pose x
+                                0, 0.01, 0, 0, 0, 0,  // covariance on pose y
+                                0, 0, 0.01, 0, 0, 0,  // covariance on pose z
+                                0, 0, 0, 1, 0, 0,  // covariance on rot x
+                                0, 0, 0, 0, 1, 0,  // covariance on rot y
+                                0, 0, 0, 0, 0, 1};  // covariance on rot z
 
     nav_msgs::Odometry odom;
     odom.header.stamp = ros::Time::now();
@@ -251,6 +264,7 @@ nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geomet
     odom.twist = twist_msg;
     return odom;
 }
+
 /* main function */
 int main(int argc,char *argv[])
 {

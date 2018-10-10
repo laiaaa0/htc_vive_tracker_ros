@@ -6,9 +6,9 @@
     	<arg name="target_frame" value ="$(arg device)"/>
 	</include>
     
-	<include file="$(find robot_pose_ekf)/robot_pose_ekf.launch"/>
-    <param name="robot_pose_ekf/odom_used" value="false"/>
-    <param name="robot_pose_ekf/imu_used" value="false"/>
-    <param name="robot_pose_ekf/vo_used" value="false"/>
+
+   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find iri_htc_vive_tracker)/params/ekf_htcvive.yaml" />
+   </node>
 
 </launch>

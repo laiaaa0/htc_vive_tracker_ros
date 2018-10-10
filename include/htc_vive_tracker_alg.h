@@ -145,6 +145,7 @@ class HtcViveTrackerAlgorithm
     
     bool TriggerHapticPulse(const std::string & device_name, uint32_t strength);
 
+    //TODO decide if this functions will return orientation as given or always the same 
     geometry_msgs::PoseStamped PoseFromTF(const tf::StampedTransform & stamped_transform);
     // the driver parameters
 
