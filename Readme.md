@@ -32,8 +32,9 @@ Check the launch file [example](launch/publish_wam_chaperone_link.launch)
 # WAM follows tracker
 
 ## Dependencies
-* htc_vive_tracker [link](https://gitlab.iri.upc.edu/labrobotica/drivers/htc_vive_tracker)
-* iri_wam_dmp tracker [link](https://gitlab.iri.upc.edu/iri_wam/iri_wam_dmp_tracker)
+* [htc_vive_tracker](https://gitlab.iri.upc.edu/labrobotica/drivers/htc_vive_tracker)
+* [iri_wam_dmp_tracker](https://gitlab.iri.upc.edu/iri_wam/iri_wam_dmp_tracker)
+* [robot_localization](https://github.com/cra-ros-pkg/robot_localization)
 
 
 
