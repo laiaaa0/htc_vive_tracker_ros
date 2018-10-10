@@ -34,7 +34,9 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
     this->source_frame_name_ = "chaperone";
 
     vo_publisher_ = this->public_node_handle_.advertise<nav_msgs::Odometry>("vo",100);
+    pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
 
+    filtered_odometry_subscriber_ = this->public_node_handle_.subscribe("/filtered_odometry", 100, &HtcViveTrackerAlgNode::filtered_odometryCallback, this);
 
   // [init publishers]
   
@@ -53,6 +55,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
   // [init action clients]
 }
 
+ 
 HtcViveTrackerAlgNode::~HtcViveTrackerAlgNode(void)
 {
   // [free dynamic memory]
@@ -209,6 +212,14 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 
 
 
+
+void HtcViveTrackerAlgNode::filtered_odometryCallback(const nav_msgs::Odometry::ConstPtr & msg){
+    geometry_msgs::PoseStamped new_pose;
+    new_pose.pose = msg->pose.pose;
+    new_pose.header.stamp = ros::Time::now();
+    new_pose.header.frame_id = this->alg_.WORLD_NAME;
+    pose_publisher_.publish(new_pose);
+}
 
 bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
 	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->haptic_pulse_strength_);

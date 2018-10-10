@@ -48,12 +48,12 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
 {
   private:
     // [publisher attributes]
-    geometry_msgs::TransformStamped transform_stamped_;
+    ros::Publisher vo_publisher_;
+    ros::Publisher pose_publisher_;
     //Transformation from base to world. In this case, WAM to CHAPERONE
  
     // [subscriber attributes]
-	
-    ros::Publisher vo_publisher_;
+    ros::Subscriber filtered_odometry_subscriber_;
     tf::TransformListener tf_listener_;
         //
     // [service attributes]
@@ -70,6 +70,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     * This variable has all the driver parameters defined in the cfg config file.
     * Is updated everytime function config_update() is called.
     */
+    geometry_msgs::TransformStamped transform_stamped_;
     Config config_;
 
     uint32_t haptic_pulse_strength_;
@@ -84,6 +85,8 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
 
     ros::ServiceServer get_button_server_;
     bool get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res);
+
+    void filtered_odometryCallback(const nav_msgs::Odometry::ConstPtr& msg);
   public:
    /**
     * \brief Constructor
