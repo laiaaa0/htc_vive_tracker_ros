@@ -22,7 +22,7 @@
 		name = "iri_htc_vive_tracker" 
         output = "screen">
          <param name="~target_frame_name" type="string" value="$(arg target_frame)"/>
-         <remap from="~new_pose" to="/iri_wam/pose_surface"/>
 
 	</node>
+    
 </launch>

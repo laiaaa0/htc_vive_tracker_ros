@@ -33,7 +33,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
     
     this->source_frame_name_ = "chaperone";
 
-    pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
+    vo_publisher_ = this->public_node_handle_.advertise<nav_msgs::Odometry>("vo",100);
 
 
   // [init publishers]
@@ -89,7 +89,9 @@ void HtcViveTrackerAlgNode::PublishPoseOfDeviceToFollow(void){
         if (is_transform_possible) {
             this->tf_listener_.lookupTransform(this->source_frame_name_, this->target_frame_name_, ros::Time(0), stamped_transform);
             geometry_msgs::PoseStamped tf_pose = this->alg_.PoseFromTF(stamped_transform);
-            this->pose_publisher_.publish(tf_pose);
+            Velocity device_vel = this->alg_.GetDeviceVelocity(this->target_frame_name_);
+            nav_msgs::Odometry current_vo = this->CreateOdometryFromPoseVel(tf_pose, device_vel);
+            this->vo_publisher_.publish(current_vo);
         }
         else {
             ROS_INFO ("Transform not possible");
@@ -225,6 +227,42 @@ bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetB
 	if (!res.success) res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
 	return true;
 }
+
+nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geometry_msgs::PoseStamped & pose, const Velocity & vel){
+    
+    geometry_msgs::TwistWithCovariance twist_msg;
+    twist_msg.twist.linear.x = vel.linear_velocity.x;
+    twist_msg.twist.linear.y = vel.linear_velocity.y;
+    twist_msg.twist.linear.z = vel.linear_velocity.z;
+    twist_msg.twist.angular.x = vel.angular_velocity.x;
+    twist_msg.twist.angular.y = vel.angular_velocity.y;
+    twist_msg.twist.angular.z = vel.angular_velocity.z;
+
+    twist_msg.covariance = {0.01, 0, 0, 0, 0, 0,  // covariance on pose x
+                                0, 0.01, 0, 0, 0, 0,  // covariance on pose y
+                                0, 0, 0.01, 0, 0, 0,  // covariance on pose z
+                                0, 0, 0, 1, 0, 0,  //  covariance on rot x
+                                0, 0, 0, 0, 1, 0,  //  covariance on rot y
+                                0, 0, 0, 0, 0, 1};  //  covariance on rot z
+
+    geometry_msgs::PoseWithCovariance pose_msg;
+    pose_msg.pose = pose.pose;
+    pose_msg.covariance = {0.01, 0, 0, 0, 0, 0,  // covariance on pose x
+                                0, 0.01, 0, 0, 0, 0,  // covariance on pose y
+                                0, 0, 0.01, 0, 0, 0,  // covariance on pose z
+                                0, 0, 0, 1, 0, 0,  // covariance on rot x
+                                0, 0, 0, 0, 1, 0,  // covariance on rot y
+                                0, 0, 0, 0, 0, 1};  // covariance on rot z
+
+    nav_msgs::Odometry odom;
+    odom.header.stamp = ros::Time::now();
+    odom.header.frame_id = this->alg_.WORLD_NAME; 
+    odom.child_frame_id = this->target_frame_name_;
+    odom.pose = pose_msg;
+    odom.twist = twist_msg;
+    return odom;
+}
+
 /* main function */
 int main(int argc,char *argv[])
 {
