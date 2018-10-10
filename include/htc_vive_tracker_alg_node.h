@@ -53,7 +53,6 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
  
     // [subscriber attributes]
 	
-    ros::Publisher pose_publisher_;
     ros::Publisher vo_publisher_;
     tf::TransformListener tf_listener_;
         //

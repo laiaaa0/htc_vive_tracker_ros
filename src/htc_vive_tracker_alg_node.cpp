@@ -33,7 +33,6 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
     
     this->source_frame_name_ = "chaperone";
 
-    pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
     vo_publisher_ = this->public_node_handle_.advertise<nav_msgs::Odometry>("vo",100);
 
 
@@ -93,7 +92,6 @@ void HtcViveTrackerAlgNode::PublishPoseOfDeviceToFollow(void){
             Velocity device_vel = this->alg_.GetDeviceVelocity(this->target_frame_name_);
             nav_msgs::Odometry current_vo = this->CreateOdometryFromPoseVel(tf_pose, device_vel);
             this->vo_publisher_.publish(current_vo);
-            this->pose_publisher_.publish(tf_pose);
         }
         else {
             ROS_INFO ("Transform not possible");

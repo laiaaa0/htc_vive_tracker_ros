@@ -9,6 +9,7 @@
 
    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
     <rosparam command="load" file="$(find iri_htc_vive_tracker)/params/ekf_htcvive.yaml" />
+    <remap from="odometry/filtered" to="filtered_odometry"/>
    </node>
 
 </launch>
