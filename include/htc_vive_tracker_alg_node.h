@@ -27,15 +27,19 @@
 
 #include <iri_base_algorithm/iri_base_algorithm.h>
 #include "htc_vive_tracker_alg.h"
+
+
 #include "iri_htc_vive_tracker/GetButtonPressed.h"
 #include "iri_htc_vive_tracker/TriggerHapticPulse.h"
 
-#include "tf/transform_listener.h"
+#include <tf/transform_broadcaster.h>
 
-
-// [publisher subscriber headers]
 #include <geometry_msgs/TransformStamped.h>
+#include "geometry_msgs/PoseStamped.h"
+
 #include <nav_msgs/Odometry.h>
+// [publisher subscriber headers]
+ 
 // [service client headers]
 
 // [action server client headers]
@@ -54,7 +58,6 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
  
     // [subscriber attributes]
     ros::Subscriber filtered_odometry_subscriber_;
-    tf::TransformListener tf_listener_;
         //
     // [service attributes]
 
@@ -78,7 +81,6 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     bool frame_names_set;
 
     std::string target_frame_name_;
-    std::string source_frame_name_;
 
     ros::ServiceServer trigger_pulse_server_;
     bool trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res);
@@ -154,7 +156,7 @@ class HtcViveTrackerAlgNode : public algorithm_base::IriBaseAlgorithm<HtcViveTra
     
     tf::Quaternion ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig);
     
-    nav_msgs::Odometry CreateOdometryFromPoseVel(const geometry_msgs::PoseStamped & pose, const Velocity & vel);
+    nav_msgs::Odometry CreateOdometryFromPoseVel(const geometry_msgs::Pose & pose, const Velocity & vel);
     
 };
 

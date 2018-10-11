@@ -31,7 +31,6 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
         this->frame_names_set = false;
     }
     
-    this->source_frame_name_ = "chaperone";
 
     vo_publisher_ = this->public_node_handle_.advertise<nav_msgs::Odometry>("vo",100);
     pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
@@ -84,30 +83,6 @@ void HtcViveTrackerAlgNode::BroadcastAllPoses(void) {
 
 }
 
-void HtcViveTrackerAlgNode::PublishPoseOfDeviceToFollow(void){
-   if (this->frame_names_set){
-    tf::StampedTransform stamped_transform;
-    try{
-        bool is_transform_possible = this->tf_listener_.canTransform(this->source_frame_name_, this->target_frame_name_, ros::Time(0));
-        if (is_transform_possible) {
-            this->tf_listener_.lookupTransform(this->source_frame_name_, this->target_frame_name_, ros::Time(0), stamped_transform);
-            geometry_msgs::PoseStamped tf_pose = this->alg_.PoseFromTF(stamped_transform);
-            Velocity device_vel = this->alg_.GetDeviceVelocity(this->target_frame_name_);
-            nav_msgs::Odometry current_vo = this->CreateOdometryFromPoseVel(tf_pose, device_vel);
-            this->vo_publisher_.publish(current_vo);
-        }
-        else {
-            ROS_INFO ("Transform not possible");
-        }
-    }
-    catch (tf::TransformException &ex) {
-          ROS_ERROR("%s",ex.what());
-          ros::Duration(1.0).sleep();
-    }
-   }
-  
-}
-
 void HtcViveTrackerAlgNode::mainNodeThread(void)
 {
 
@@ -117,9 +92,6 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
   // This function broadcasts the poses of all devices detected
   this->BroadcastAllPoses();
 
-  // This function publishes the pose of the device in source_frame_name_
-  this->PublishPoseOfDeviceToFollow();
-  
 
 }
 
@@ -177,6 +149,20 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
 
 
 	tf_broadcaster.sendTransform(transform_stamped_);
+    //If the device is the one we want to follow, also publish the Odometry
+    if (this->frame_names_set && device_name == this->target_frame_name_){
+        geometry_msgs::Pose device_pose;
+        device_pose.position.x = pose[0];
+        device_pose.position.y = pose[1];
+        device_pose.position.z = pose[2];
+        device_pose.orientation.x = q.x();
+        device_pose.orientation.y = q.y();
+        device_pose.orientation.z = q.z();
+        device_pose.orientation.w = q.w();
+        Velocity device_vel = this->alg_.GetDeviceVelocity(this->target_frame_name_);
+        nav_msgs::Odometry current_vo = this->CreateOdometryFromPoseVel(device_pose, device_vel);
+        this->vo_publisher_.publish(current_vo);
+    }
     }
 
 }
@@ -239,7 +225,7 @@ bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetB
 	return true;
 }
 
-nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geometry_msgs::PoseStamped & pose, const Velocity & vel){
+nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geometry_msgs::Pose & pose, const Velocity & vel){
     
     geometry_msgs::TwistWithCovariance twist_msg;
     twist_msg.twist.linear.x = vel.linear_velocity.x;
@@ -257,7 +243,7 @@ nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geomet
                                 0, 0, 0, 0, 0, 1};  //  covariance on rot z
 
     geometry_msgs::PoseWithCovariance pose_msg;
-    pose_msg.pose = pose.pose;
+    pose_msg.pose = pose;
     pose_msg.covariance = {0.01, 0, 0, 0, 0, 0,  // covariance on pose x
                                 0, 0.01, 0, 0, 0, 0,  // covariance on pose y
                                 0, 0, 0.01, 0, 0, 0,  // covariance on pose z

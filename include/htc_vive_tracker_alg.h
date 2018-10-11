@@ -28,8 +28,7 @@
 #include <iri_htc_vive_tracker/HtcViveTrackerConfig.h>
 #include <math.h>
 
-#include "geometry_msgs/PoseStamped.h"
-#include <tf/transform_broadcaster.h>
+
 //include htc_vive_tracker_alg main library
 #include "htc_vive_tracker.h"
 
@@ -145,8 +144,6 @@ class HtcViveTrackerAlgorithm
     
     bool TriggerHapticPulse(const std::string & device_name, uint32_t strength);
 
-    //TODO decide if this functions will return orientation as given or always the same 
-    geometry_msgs::PoseStamped PoseFromTF(const tf::StampedTransform & stamped_transform);
     // the driver parameters
 
    /**
