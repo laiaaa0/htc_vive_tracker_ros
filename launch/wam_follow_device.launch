@@ -1,11 +1,16 @@
 <launch>
        <!-- Initialize htc vive and publish transformation -->
     <arg name="device" default="tracker_1"/>
-	<include file="$(find iri_htc_vive_tracker)/launch/publish_wam_chaperone_link.launch">
-	    <!-- Initialize tf-to-pose node from chaperone to tracker1-->
-    	<arg name="target_frame" value ="$(arg device)"/>
-	</include>
     
+    <node pkg="iri_htc_vive_tracker"
+        type = "iri_htc_vive_tracker"
+        name = "iri_htc_vive_tracker"
+        output = "screen">
+         <param name="~target_frame_name" type="string" value="$(arg device)"/>
+        
+         <remap from="~filtered_odometry" to="/filtered_odometry"/>
+         <remap from="~new_pose" to="/iri_wam/pose_surface"/>
+    </node>
 
    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
     <rosparam command="load" file="$(find iri_htc_vive_tracker)/params/ekf_htcvive.yaml" />
