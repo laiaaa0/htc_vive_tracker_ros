@@ -36,7 +36,7 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
     vo_publisher_ = this->public_node_handle_.advertise<nav_msgs::Odometry>("vo",100);
     pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
 
-    filtered_odometry_subscriber_ = this->public_node_handle_.subscribe("/filtered_odometry", 100, &HtcViveTrackerAlgNode::filtered_odometryCallback, this);
+    filtered_odometry_subscriber_ = this->public_node_handle_.subscribe("filtered_odometry", 100, &HtcViveTrackerAlgNode::filtered_odometryCallback, this);
 
   // [init publishers]
   
