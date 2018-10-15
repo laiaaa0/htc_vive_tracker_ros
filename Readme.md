@@ -20,7 +20,7 @@ Check the launch file [example](launch/publish_wam_chaperone_link.launch)
 
 # Controller axis
 
-![controller_axis](/uploads/9fb896ac8d6049efccea833d0562715c/controller_axis.png)
+![controller_axis](/uploads/3f23c8a5b9acb8af75cdc2d8901f3135/Controller.png)
 
 <!--# Class reference
 
