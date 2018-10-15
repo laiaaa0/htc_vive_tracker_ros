@@ -8,7 +8,6 @@
         name = "iri_htc_vive_tracker"
         output = "screen">
          <param name="~target_frame_name" type="string" value="$(arg device)"/>
-        
          <remap from="~filtered_odometry" to="/filtered_odometry"/>
          <remap from="~new_pose" to="/iri_wam/pose_surface"/>
     </node>
