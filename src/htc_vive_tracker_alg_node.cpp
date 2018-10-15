@@ -32,21 +32,22 @@ HtcViveTrackerAlgNode::HtcViveTrackerAlgNode(void) :
     }
     
 
-    vo_publisher_ = this->public_node_handle_.advertise<nav_msgs::Odometry>("vo",100);
-    pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
 
-    filtered_odometry_subscriber_ = this->public_node_handle_.subscribe("filtered_odometry", 100, &HtcViveTrackerAlgNode::filtered_odometryCallback, this);
 
   // [init publishers]
   
+    vo_publisher_ = this->public_node_handle_.advertise<nav_msgs::Odometry>("vo",100);
+    pose_publisher_ = this->public_node_handle_.advertise<geometry_msgs::PoseStamped>("new_pose",100);
   
   // [init subscribers]
   
+    filtered_odometry_subscriber_ = this->public_node_handle_.subscribe("filtered_odometry", 100, &HtcViveTrackerAlgNode::filtered_odometryCallback, this);
+  
   // [init services]
   
-  this->trigger_pulse_server_ = this->public_node_handle_.advertiseService("trigger_pulse", &HtcViveTrackerAlgNode::trigger_pulse_serverCallback, this);
+    this->trigger_pulse_server_ = this->public_node_handle_.advertiseService("trigger_pulse", &HtcViveTrackerAlgNode::trigger_pulse_serverCallback, this);
+    this->get_button_server_ = this->public_node_handle_.advertiseService("button_pressed", &HtcViveTrackerAlgNode::get_button_serverCallback,this);
 
-  this->get_button_server_ = this->public_node_handle_.advertiseService("button_pressed", &HtcViveTrackerAlgNode::get_button_serverCallback,this);
   // [init clients]
   
   // [init action servers]
@@ -71,7 +72,7 @@ void HtcViveTrackerAlgNode::BroadcastAllPoses(void) {
 		}
 		
 		// HMD always returns a dummy position which is either (0,0,0,1) or the position of a tracking_reference.
-		if (names[i]=="hmd_1" && !this->publish_hmd_) {
+		if (names[i]=="hmd_1" && !this->config_.publish_hmd) {
 			continue;
 		}
 		else{
@@ -79,8 +80,6 @@ void HtcViveTrackerAlgNode::BroadcastAllPoses(void) {
 		}
 	}
   }
-
-
 }
 
 void HtcViveTrackerAlgNode::mainNodeThread(void)
@@ -92,12 +91,37 @@ void HtcViveTrackerAlgNode::mainNodeThread(void)
   // This function broadcasts the poses of all devices detected
   this->BroadcastAllPoses();
 
-
 }
 
 /*  [subscriber callbacks] */
 
+void HtcViveTrackerAlgNode::filtered_odometryCallback(const nav_msgs::Odometry::ConstPtr & msg){
+    geometry_msgs::PoseStamped new_pose;
+    new_pose.pose = msg->pose.pose;
+    new_pose.header.stamp = ros::Time::now();
+    new_pose.header.frame_id = this->alg_.WORLD_NAME;
+    pose_publisher_.publish(new_pose);
+}
+
 /*  [service callbacks] */
+
+bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
+	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->config_.pulse_length);
+	if (!res.success) {
+		res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
+	}
+	return true;
+}
+
+bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res) {
+	vr::EVRButtonId button_pressed =  this->alg_.GetPressedButton(req.device_name);
+	res.button_pressed = (int) button_pressed;
+	res.success = this->alg_.IsDeviceDetected (req.device_name);
+	if (!res.success) res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
+	return true;
+}
+
+
 
 /*  [action callbacks] */
 
@@ -108,12 +132,11 @@ void HtcViveTrackerAlgNode::node_config_update(Config &config, uint32_t level)
   this->alg_.lock();
  
   if (config.print_devices) {
-	this->PrintAllDeviceNames();
+	  config.print_devices = false;
+      this->PrintAllDeviceNames();
   }
-  this->haptic_pulse_strength_ = config.pulse_length;
  
   this->config_=config;
-  this->publish_hmd_ = config.publish_hmd;
   this->alg_.unlock();
 }
 
@@ -130,18 +153,19 @@ void HtcViveTrackerAlgNode::BroadcastPoseRotated(const std::string & device_name
 	
     if (this->alg_.GetDevicePositionQuaternion(device_name,pose,quaternion)) {
 
-	this->transform_stamped_.header.stamp = ros::Time::now();
-	this->transform_stamped_.header.frame_id = this->alg_.WORLD_NAME;
-	transform_stamped_.child_frame_id = device_name;
-	transform_stamped_.transform.translation.x = pose[0];
-	transform_stamped_.transform.translation.y = pose[1];
-	transform_stamped_.transform.translation.z = pose[2];
-	
+
    	tf::Quaternion q = tf::Quaternion(quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
 	
 	//Apply the necessary rotations so that the coordinate system is the one decided at IRI
 	q = this -> ApplyRotationForIRIStandardCoordinates(q);
 
+	this->transform_stamped_.header.stamp = ros::Time::now();
+	this->transform_stamped_.header.frame_id = this->alg_.WORLD_NAME;
+    transform_stamped_.child_frame_id = device_name;
+	transform_stamped_.transform.translation.x = pose[0];
+	transform_stamped_.transform.translation.y = pose[1];
+	transform_stamped_.transform.translation.z = pose[2];
+	
 	transform_stamped_.transform.rotation.x = q.x();
 	transform_stamped_.transform.rotation.y = q.y();
 	transform_stamped_.transform.rotation.z = q.z();
@@ -177,20 +201,25 @@ void HtcViveTrackerAlgNode::PrintAllDeviceNames() {
 		}
 	}
 }
+
 tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(const tf::Quaternion & orig) {
 	tf::Quaternion q_result;
 
 	//Define rotations by axis + angle
 	tf::Vector3 x_axis(1.0, 0.0, 0.0);	
+	tf::Vector3 y_axis(0.0, 1.0, 0.0);	
 	tf::Vector3 z_axis(0.0, 0.0, 1.0);	
 	tf::Quaternion rotation_x90 = tf::Quaternion(x_axis, M_PI/2);
+	tf::Quaternion rotation_minusx90 = tf::Quaternion(x_axis, -M_PI/2);
 	tf::Quaternion rotation_x180 = tf::Quaternion(x_axis, M_PI);
 	tf::Quaternion rotation_z90 = tf::Quaternion(z_axis, M_PI/2);
+	tf::Quaternion rotation_minusy90 = tf::Quaternion(y_axis, -M_PI/2);
+	tf::Quaternion rotation_minusz90 = tf::Quaternion(z_axis, -M_PI/2);
 
 	//Apply two pre-rotations, in order to match axis in device
 	//Apply two post-rotations, in order to match axis to coordinate system.
-	q_result = rotation_z90*rotation_x90*orig*rotation_x180*rotation_z90;
-	
+	//q_result = rotation_z90*rotation_x90*orig*rotation_x180*rotation_z90;
+	q_result = rotation_z90*rotation_x90*orig*rotation_minusy90*rotation_minusx90; 	
 	return q_result;
 	
 }
@@ -198,32 +227,6 @@ tf::Quaternion HtcViveTrackerAlgNode::ApplyRotationForIRIStandardCoordinates(con
 
 
 
-
-void HtcViveTrackerAlgNode::filtered_odometryCallback(const nav_msgs::Odometry::ConstPtr & msg){
-    geometry_msgs::PoseStamped new_pose;
-    new_pose.pose = msg->pose.pose;
-    new_pose.header.stamp = ros::Time::now();
-    new_pose.header.frame_id = this->alg_.WORLD_NAME;
-    pose_publisher_.publish(new_pose);
-}
-
-bool HtcViveTrackerAlgNode::trigger_pulse_serverCallback(iri_htc_vive_tracker::TriggerHapticPulse::Request &req, iri_htc_vive_tracker::TriggerHapticPulse::Response &res) {
-	res.success = this->alg_.TriggerHapticPulse(req.device_name, this->haptic_pulse_strength_);
-	if (!res.success) {
-		res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
-	}
-
-	return true;
-
-}
-
-bool HtcViveTrackerAlgNode::get_button_serverCallback(iri_htc_vive_tracker::GetButtonPressed::Request &req, iri_htc_vive_tracker::GetButtonPressed::Response &res) {
-	vr::EVRButtonId button_pressed =  this->alg_.GetPressedButton(req.device_name);
-	res.button_pressed = (int) button_pressed;
-	res.success = this->alg_.IsDeviceDetected (req.device_name);
-	if (!res.success) res.message = this->alg_.DEVICE_NOT_FOUND_MSG;
-	return true;
-}
 
 nav_msgs::Odometry HtcViveTrackerAlgNode::CreateOdometryFromPoseVel(const geometry_msgs::Pose & pose, const Velocity & vel){
     
