@@ -100,6 +100,11 @@ void HtcViveTrackerAlgNode::filtered_odometryCallback(const nav_msgs::Odometry::
     new_pose.pose = msg->pose.pose;
     new_pose.header.stamp = ros::Time::now();
     new_pose.header.frame_id = this->alg_.WORLD_NAME;
+    new_pose.pose.orientation.x = 0; //TODO : set orientation looking down instead of up
+    new_pose.pose.orientation.y = 0;
+    new_pose.pose.orientation.z = 0;
+    new_pose.pose.orientation.w = 1;
+
     pose_publisher_.publish(new_pose);
 }
 
