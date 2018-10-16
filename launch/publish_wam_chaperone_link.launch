@@ -1,20 +1,22 @@
 <launch>
 
-       <!-- HTC Vive Transformation -->
-       <!--static_transform_publisher x y z qx qy qz qw frame_id child_frame_id  period_in_ms -->
-        <node pkg="tf"
-              type="static_transform_publisher"
-              name="htcvive"
-              args="-1.344015411206918
-                    0.075968113546995
-                    0.162852033456043
-                    -0.107734070843068   
-                    0.362318656224589  
-                    -0.574939205585385
-                    0.725646932889567
-                    iri_wam_link_base 
-                    chaperone 300" >
-        </node>
-	
+   <!-- HTC Vive Transformation -->
+   <!--static_transform_publisher x y z qx qy qz qw frame_id child_frame_id  period_in_ms -->
+    <node pkg="tf"
+          type="static_transform_publisher"
+          name="htcvive"
+          args="
+         0.999400268770331
+        -0.045943572920454
+        -1.120943081237594
+        -0.039906861078208 
+         0.098012931362103 
+         0.855630485747525 
+         0.506653115636475 
+
+        iri_wam_link_base 
+        chaperone 300" >
+    </node>
+
    
 </launch>
