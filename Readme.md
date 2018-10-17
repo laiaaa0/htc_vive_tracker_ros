@@ -36,12 +36,13 @@ To test the WAM following a tracker demo do the following :
     roslaunch iri_wam_dmp_tracker iri_wam_dmp_tracker.launch
 
 
-# Tracker axis
+# Coordinate systems
+### Tracker axis
 
 <img src="/uploads/248d343fc155216408d836e061636a7d/tracker_axis.png"  width="500" >
 
 
-# Controller axis
+### Controller axis
 
 <img src="/uploads/3f23c8a5b9acb8af75cdc2d8901f3135/Controller.png" height="300">
 
