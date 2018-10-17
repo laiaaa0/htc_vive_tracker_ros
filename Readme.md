@@ -14,27 +14,16 @@ This returns the two transforms (base-world and hand-eye) , you can then print i
 Check the launch file [example](launch/publish_wam_chaperone_link.launch)
 
 
-# Tracker axis
-
-![tracker_axis](/uploads/248d343fc155216408d836e061636a7d/tracker_axis.png)
-
-# Controller axis
-
-![controller_axis](/uploads/3f23c8a5b9acb8af75cdc2d8901f3135/Controller.png)
-
-<!--# Class reference
-
-![htcvivetrackerROS-Page-2](/uploads/b54f6fac94401873783ee96495b84694/htcvivetrackerROS-Page-2.jpg)
-
-![htcvivetrackerROS](/uploads/011da2e5568b6ee11056e188056c98d3/htcvivetrackerROS.jpg)-->
-
-
 # WAM follows tracker
 
 ## Dependencies
-* [htc_vive_tracker](https://gitlab.iri.upc.edu/labrobotica/drivers/htc_vive_tracker)
-* [iri_wam_dmp_tracker](https://gitlab.iri.upc.edu/iri_wam/iri_wam_dmp_tracker)
-* [robot_localization](https://github.com/cra-ros-pkg/robot_localization)
+#### HTC Vive Tracker C++ library
+Folllow the download and install instructions from the [htc_vive_tracker](https://gitlab.iri.upc.edu/labrobotica/drivers/htc_vive_tracker) repository.
+#### IRI wam dmp tracker
+Folllow the download and install instructions from the [iri_wam_dmp_tracker](https://gitlab.iri.upc.edu/iri_wam/iri_wam_dmp_tracker) repository.
+#### Robot localization package
+
+    sudo apt-get install ros-kinetic-robot-localization
 
 
 
@@ -42,6 +31,23 @@ Check the launch file [example](launch/publish_wam_chaperone_link.launch)
 
 To test the WAM following a tracker demo do the following :
 
-    roslaunch iri_htc_vive_tracker wam_follow_device.launch 
+    roslaunch iri_htc_vive_tracker wam_follow_device.launch  device:=tracker_1
     roslaunch iri_wam_bringup iri_wam_bringup.launch
     roslaunch iri_wam_dmp_tracker iri_wam_dmp_tracker.launch
+
+
+# Tracker axis
+
+<img src="/uploads/248d343fc155216408d836e061636a7d/tracker_axis.png"  width="500" >
+
+
+# Controller axis
+
+<img src="/uploads/3f23c8a5b9acb8af75cdc2d8901f3135/Controller.png" height="300">
+
+<!--# Class reference
+
+![htcvivetrackerROS-Page-2](/uploads/b54f6fac94401873783ee96495b84694/htcvivetrackerROS-Page-2.jpg)
+
+![htcvivetrackerROS](/uploads/011da2e5568b6ee11056e188056c98d3/htcvivetrackerROS.jpg)-->
+
