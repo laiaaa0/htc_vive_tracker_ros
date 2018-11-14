@@ -1,7 +1,7 @@
 ### ROS node for htc vive
 Publishes all the devices positions and orientations as a tf tree. The parent of the tree is called the chaperone. The coordinate system is the following
 
-![tf_tree](/uploads/805c03196bbe7561d47c843e24231517/tf_tree.png)
+![tf_tree](https://raw.githubusercontent.com/laiaaa0/htc_vive_tracker_ros/master/tf_tree.png)
 
 
 # Hand eye calibration
@@ -39,16 +39,12 @@ To test the WAM following a tracker demo do the following :
 # Coordinate systems
 ### Tracker axis
 
-<img src="/uploads/248d343fc155216408d836e061636a7d/tracker_axis.png"  width="500" >
+<img src="https://raw.githubusercontent.com/laiaaa0/htc_vive_tracker_ros/master/tracker_axis.png"  width="500" >
 
 
 ### Controller axis
 
-<img src="/uploads/3f23c8a5b9acb8af75cdc2d8901f3135/Controller.png" height="300">
+<img src="https://raw.githubusercontent.com/laiaaa0/htc_vive_tracker_ros/master/Controller_axis.png" height="300">
 
-<!--# Class reference
 
-![htcvivetrackerROS-Page-2](/uploads/b54f6fac94401873783ee96495b84694/htcvivetrackerROS-Page-2.jpg)
-
-![htcvivetrackerROS](/uploads/011da2e5568b6ee11056e188056c98d3/htcvivetrackerROS.jpg)-->
 
